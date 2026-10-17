@@ -1,0 +1,6 @@
+{
+  "name": "BeInSkills - منصة تنمية القدرات وسوق التكوينات",
+  "description": "منصة BeInSkills الذكية لتنمية المهارات والقدرات، سوق تكوينات احترافية وجواز المهارات مع مستشار ذكاء اصطناعي وتوليد الشارات الفائقة الدقة.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
