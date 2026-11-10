@@ -54,7 +54,8 @@ import {
   UserPlus,
   DollarSign,
   Lock,
-  Wallet
+  Wallet,
+  X
 } from 'lucide-react';
 
 export default function App() {
@@ -118,6 +119,9 @@ export default function App() {
 
   // Admin & Directory Modals
   const [isAdminOpen, setIsAdminOpen] = useState(false);
+  const [isAdminAuthModalOpen, setIsAdminAuthModalOpen] = useState(false);
+  const [adminPasscode, setAdminPasscode] = useState('');
+  const [adminAuthError, setAdminAuthError] = useState(false);
   const [isSpecializationsOpen, setIsSpecializationsOpen] = useState(false);
   const [isInstructorsDirectoryOpen, setIsInstructorsDirectoryOpen] = useState(false);
   const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
@@ -493,17 +497,11 @@ export default function App() {
         onScrollToPassport={scrollToPassport}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        onOpenAdmin={() => setIsAdminOpen(true)}
         onOpenSpecializations={() => setIsSpecializationsOpen(true)}
         onOpenInstructorsDirectory={() => setIsInstructorsDirectoryOpen(true)}
         onOpenRegistration={openRegistrationWithRole}
         activeViewRole={activeViewRole}
-        onChangeViewRole={(role) => {
-          setActiveViewRole(role);
-          if (role === 'admin') {
-            setIsAdminOpen(true);
-          }
-        }}
+        onChangeViewRole={(role) => setActiveViewRole(role)}
         currentLang={currentLang}
         onLanguageChange={setCurrentLang}
       />
@@ -523,40 +521,16 @@ export default function App() {
                 showToast(currentLang === 'ar' ? `تم إرسال طلب تحرير مستحقات الضمان الوسيط بمبلغ ${amount} درهم إلى الإدارة.` : `Escrow payout request of ${amount} ${t.currency} sent to administration.`);
               }}
               onOpenCertificateModal={handleOpenTrustCertificate}
+              onBackToLearner={() => {
+                setActiveViewRole('student');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
               currentLang={currentLang}
             />
           </div>
         )}
 
-        {/* VIEW 2: ADMIN VIEW SHORTCUT BANNER (When Role is admin) */}
-        {activeViewRole === 'admin' && (
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div className="glass-card p-6 rounded-3xl border border-amber-500/40 bg-gradient-to-r from-amber-950/40 via-slate-900 to-purple-950/40 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-3.5">
-                <div className="p-3 rounded-2xl bg-amber-500 text-slate-950 font-black">
-                  <ShieldCheck className="w-7 h-7" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-black text-white font-['Alexandria']">
-                    {t.admin_mode_banner_title}
-                  </h3>
-                  <p className="text-xs text-slate-300 mt-0.5">
-                    {t.admin_mode_banner_sub}
-                  </p>
-                </div>
-              </div>
-
-              <button
-                onClick={() => setIsAdminOpen(true)}
-                className="px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm shadow-xl shadow-amber-500/20 transition-all cursor-pointer shrink-0"
-              >
-                {t.admin_mode_banner_btn}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* VIEW 3: STUDENT / MARKETPLACE EXPERIENCE (Default & accessible across roles) */}
+        {/* VIEW 2: STUDENT / MARKETPLACE EXPERIENCE (The Default Primary Home) */}
         {activeViewRole !== 'instructor' && (
           <>
             {/* 2. Hero Section */}
@@ -814,10 +788,15 @@ export default function App() {
             />
 
             <div className="flex flex-wrap items-center gap-4 text-xs">
+              <span className="hover:text-white cursor-pointer" onClick={() => {
+                setActiveViewRole('student');
+                setActiveTab('all');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}>الرئيسية</span>
               <span className="hover:text-white cursor-pointer" onClick={() => setIsSpecializationsOpen(true)}>{t.nav_specializations}</span>
+              <span className="hover:text-white cursor-pointer" onClick={() => setIsInstructorsDirectoryOpen(true)}>دليل المكوّنين</span>
               <span className="hover:text-white cursor-pointer" onClick={scrollToCourses}>{t.nav_marketplace}</span>
               <span className="hover:text-white cursor-pointer" onClick={scrollToPassport}>{t.nav_passport}</span>
-              <span className="hover:text-white cursor-pointer" onClick={() => setIsAdminOpen(true)}>{t.nav_admin}</span>
               <span className="hover:text-white cursor-pointer" onClick={() => openRegistrationWithRole('institute')}>{t.reg_institute}</span>
               <span className="hover:text-white cursor-pointer" onClick={() => openRegistrationWithRole('trainer')}>{t.reg_trainer}</span>
               <span className="hover:text-white cursor-pointer" onClick={() => openRegistrationWithRole('learner')}>{t.reg_learner}</span>
@@ -828,9 +807,21 @@ export default function App() {
             <div>
               {t.footer_rights}
             </div>
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-              <span>{t.footer_status}</span>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+                <span>{t.footer_status}</span>
+              </div>
+
+              {/* Discreet Protected Admin Entrance (Digital Library Style) */}
+              <button
+                onClick={() => setIsAdminAuthModalOpen(true)}
+                className="text-slate-600 hover:text-slate-400 transition-colors flex items-center gap-1 text-[11px] cursor-pointer"
+                title="بوابة الإدارة والتسيير"
+              >
+                <Lock className="w-3 h-3 text-slate-500" />
+                <span>الإدارة</span>
+              </button>
             </div>
           </div>
         </div>
@@ -945,6 +936,77 @@ export default function App() {
           setIsRegistrationOpen(true);
         }}
       />
+
+      {/* 10. Discreet Protected Admin Gate Modal (Digital Library Style) */}
+      {isAdminAuthModalOpen && (
+        <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md animate-in fade-in">
+          <div className="relative w-full max-w-sm bg-slate-900 border border-slate-700/80 rounded-3xl p-6 shadow-2xl text-center space-y-4">
+            <button
+              onClick={() => {
+                setIsAdminAuthModalOpen(false);
+                setAdminPasscode('');
+                setAdminAuthError(false);
+              }}
+              className="absolute top-4 left-4 text-slate-400 hover:text-white"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center justify-center mx-auto shadow-md">
+              <Lock className="w-6 h-6" />
+            </div>
+
+            <div>
+              <h4 className="text-base font-bold text-white font-['Alexandria']">
+                بوابة الإدارة والتسيير
+              </h4>
+              <p className="text-xs text-slate-400 mt-1">
+                الوصول محمي ومحصور لمسؤولي منصة BeInSkills
+              </p>
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (adminPasscode.trim() === 'admin' || adminPasscode.trim() === '2026' || adminPasscode.trim() === '1234') {
+                  setIsAdminAuthModalOpen(false);
+                  setAdminPasscode('');
+                  setAdminAuthError(false);
+                  setIsAdminOpen(true);
+                } else {
+                  setAdminAuthError(true);
+                }
+              }}
+              className="space-y-3"
+            >
+              <input
+                type="password"
+                autoFocus
+                placeholder="أدخل رمز المرور الإداري..."
+                value={adminPasscode}
+                onChange={(e) => {
+                  setAdminPasscode(e.target.value);
+                  setAdminAuthError(false);
+                }}
+                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-center text-sm text-slate-100 outline-none focus:border-amber-400 shadow-inner"
+              />
+
+              {adminAuthError && (
+                <div className="text-[11px] text-rose-400 font-bold animate-in fade-in">
+                  رمز المرور غير صحيح! يرجى التأكد والمحاولة ثانية.
+                </div>
+              )}
+
+              <button
+                type="submit"
+                className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold transition-all cursor-pointer shadow-lg shadow-amber-500/20"
+              >
+                تأكيد الدخول للوحة التحكم
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
 
     </div>
   );
