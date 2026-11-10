@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { 
+  Home,
   Sparkles, 
   Search, 
   Compass, 
@@ -8,14 +9,13 @@ import {
   Menu, 
   X, 
   User,
-  GraduationCap,
-  ShieldCheck,
-  Layers,
-  UserPlus,
-  Building2,
-  ChevronDown,
-  Wallet,
-  Check
+  GraduationCap, 
+  Layers, 
+  UserPlus, 
+  Building2, 
+  ChevronDown, 
+  Wallet, 
+  Check 
 } from 'lucide-react';
 import { UserProfile, ActiveViewRole } from '../types';
 import { RegistrationRole } from './RegistrationModal';
@@ -33,7 +33,6 @@ interface HeaderProps {
   onScrollToPassport: () => void;
   activeTab: 'all' | 'marketplace' | 'passport';
   setActiveTab: (tab: 'all' | 'marketplace' | 'passport') => void;
-  onOpenAdmin: () => void;
   onOpenSpecializations: () => void;
   onOpenInstructorsDirectory?: () => void;
   onOpenRegistration: (role?: RegistrationRole) => void;
@@ -53,7 +52,6 @@ export const Header: React.FC<HeaderProps> = ({
   onScrollToPassport,
   activeTab,
   setActiveTab,
-  onOpenAdmin,
   onOpenSpecializations,
   onOpenInstructorsDirectory,
   onOpenRegistration,
@@ -68,60 +66,53 @@ export const Header: React.FC<HeaderProps> = ({
   const t = translations[currentLang];
   const walletBalance = userProfile.wallet?.balance || 380;
 
+  const handleGoHome = () => {
+    onChangeViewRole('student');
+    setActiveTab('all');
+    setSearchQuery('');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <header className="sticky top-0 z-40 bg-[#0F172A]/95 backdrop-blur-md border-b border-slate-800/80 transition-all">
       
-      {/* Top Utility Bar: Role Swapper & Language Switcher & Wallet */}
+      {/* Top Utility Bar: Portal Switcher (Learner vs Trainer) & Wallet & Language */}
       <div className="bg-slate-950/80 border-b border-slate-800/60 py-1.5 px-4 sm:px-8 text-xs">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
           
-          {/* Role Swapper Widget */}
-          <div className="flex items-center gap-1.5">
+          {/* Portal Switcher (Clean 2-Role Toggle, No Admin button) */}
+          <div className="flex items-center gap-2">
             <span className="text-[11px] text-slate-400 font-bold hidden sm:inline">
-              {t.role_swapper_title}
+              الفضاء المعروض:
             </span>
 
             <div className="inline-flex bg-slate-900 p-0.5 rounded-xl border border-slate-700/80">
-              {/* Student View */}
+              {/* Learner Portal (Home) */}
               <button
                 type="button"
-                onClick={() => onChangeViewRole('student')}
-                className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+                onClick={handleGoHome}
+                className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
                   activeViewRole === 'student'
-                    ? 'bg-emerald-600 text-white shadow-sm'
+                    ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-sm'
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
                 <User className="w-3 h-3" />
-                <span>{t.role_student}</span>
+                <span>فضاء المتدرب (الرئيسية)</span>
               </button>
 
-              {/* Instructor View */}
+              {/* Instructor Portal */}
               <button
                 type="button"
                 onClick={() => onChangeViewRole('instructor')}
-                className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
                   activeViewRole === 'instructor'
-                    ? 'bg-[#06B6D4] text-slate-950 shadow-sm'
+                    ? 'bg-gradient-to-r from-[#7C3AED] to-[#06B6D4] text-white shadow-sm'
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
                 <GraduationCap className="w-3 h-3" />
-                <span>{t.role_instructor}</span>
-              </button>
-
-              {/* Admin View */}
-              <button
-                type="button"
-                onClick={() => onChangeViewRole('admin')}
-                className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-black transition-all cursor-pointer ${
-                  activeViewRole === 'admin'
-                    ? 'bg-amber-500 text-slate-950 shadow-sm'
-                    : 'text-amber-300 hover:text-white'
-                }`}
-              >
-                <ShieldCheck className="w-3 h-3" />
-                <span>{t.role_admin}</span>
+                <span>فضاء المكوّن والمؤسسة</span>
               </button>
             </div>
           </div>
@@ -145,7 +136,7 @@ export const Header: React.FC<HeaderProps> = ({
               <span>{t.escrow_active}</span>
             </div>
 
-            {/* Language Switcher Button (Requested: العربية، الإنجليزية، الفرنسية، الإسبانية) */}
+            {/* Language Switcher */}
             <LanguageSwitcher
               currentLang={currentLang}
               onLanguageChange={onLanguageChange}
@@ -160,14 +151,14 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20 gap-3">
           
-          {/* Logo & Brand Identity */}
+          {/* Logo & Brand Identity (Clicking goes to Home) */}
           <BrandLogo
             size="md"
             showBadge={true}
             badgeText={t.brand_sub}
             showSlogan={true}
             sloganText={t.slogan}
-            onClick={() => setActiveTab('all')}
+            onClick={handleGoHome}
           />
 
           {/* Quick Search Bar */}
@@ -193,35 +184,31 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Navigation Links */}
-          <nav className="hidden xl:flex items-center gap-1">
+          <nav className="hidden xl:flex items-center gap-1.5">
             
-            {/* All Specializations */}
+            {/* 1. الرئيسية Home (Clear & Explicit) */}
             <button
-              onClick={onOpenSpecializations}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-200 hover:text-[#06B6D4] hover:bg-slate-800/60 transition-all border border-slate-800 hover:border-[#06B6D4]/30 cursor-pointer"
+              onClick={handleGoHome}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                activeTab === 'all' && activeViewRole === 'student'
+                  ? 'bg-gradient-to-r from-[#7C3AED] to-[#06B6D4] text-white shadow-md'
+                  : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+              }`}
             >
-              <Layers className="w-3.5 h-3.5 text-[#06B6D4]" />
-              <span>{t.nav_specializations}</span>
+              <Home className="w-3.5 h-3.5" />
+              <span>الرئيسية</span>
             </button>
 
-            {/* Instructors & Centers Directory */}
-            <button
-              onClick={onOpenInstructorsDirectory}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-200 hover:text-cyan-300 hover:bg-slate-800/60 transition-all border border-slate-800 hover:border-cyan-500/30 cursor-pointer"
-            >
-              <GraduationCap className="w-3.5 h-3.5 text-[#06B6D4]" />
-              <span>دليل المكوّنين والمراكز</span>
-            </button>
-
-            {/* Marketplace */}
+            {/* 2. سوق التكوينات Marketplace */}
             <button
               onClick={() => {
+                onChangeViewRole('student');
                 setActiveTab('marketplace');
                 onScrollToCourses();
               }}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 activeTab === 'marketplace'
-                  ? 'bg-gradient-to-r from-[#7C3AED]/20 to-[#06B6D4]/20 text-[#06B6D4] border border-[#06B6D4]/30'
+                  ? 'bg-cyan-950/80 text-[#06B6D4] border border-[#06B6D4]/50 shadow-sm'
                   : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
               }`}
             >
@@ -229,9 +216,28 @@ export const Header: React.FC<HeaderProps> = ({
               <span>{t.nav_marketplace}</span>
             </button>
 
-            {/* Skills Passport */}
+            {/* 3. دليل التخصصات Specializations */}
+            <button
+              onClick={onOpenSpecializations}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-200 hover:text-[#06B6D4] hover:bg-slate-800/60 transition-all border border-slate-800 hover:border-[#06B6D4]/30 cursor-pointer"
+            >
+              <Layers className="w-3.5 h-3.5 text-[#06B6D4]" />
+              <span>دليل التخصصات</span>
+            </button>
+
+            {/* 4. دليل المكوّنين والمراكز Instructors Directory */}
+            <button
+              onClick={onOpenInstructorsDirectory}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-200 hover:text-cyan-300 hover:bg-slate-800/60 transition-all border border-slate-800 hover:border-cyan-500/30 cursor-pointer"
+            >
+              <GraduationCap className="w-3.5 h-3.5 text-[#06B6D4]" />
+              <span>دليل المكوّنين</span>
+            </button>
+
+            {/* 5. جواز المهارات Skills Passport */}
             <button
               onClick={() => {
+                onChangeViewRole('student');
                 setActiveTab('passport');
                 onScrollToPassport();
               }}
@@ -248,19 +254,19 @@ export const Header: React.FC<HeaderProps> = ({
               </span>
             </button>
 
-            {/* Smart Advisor */}
+            {/* 6. المستشار الذكي AI Advisor */}
             <button
               onClick={onOpenChat}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-800/80 hover:bg-slate-800 text-cyan-300 border border-cyan-500/30 transition-all glow-turquoise cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-800/80 hover:bg-slate-800 text-cyan-300 border border-cyan-500/30 transition-all cursor-pointer"
             >
               <Bot className="w-3.5 h-3.5 text-[#06B6D4] animate-pulse" />
               <span>{t.nav_advisor}</span>
             </button>
 
-            {/* AI Studio */}
+            {/* 7. أستوديو الشارات AI Studio */}
             <button
               onClick={onOpenImageGen}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-[#7C3AED] to-[#9333EA] hover:from-[#6D28D9] text-white shadow-md shadow-[#7C3AED]/20 transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-[#7C3AED] to-[#9333EA] text-white shadow-md transition-all cursor-pointer"
             >
               <Sparkles className="w-3.5 h-3.5 text-cyan-200" />
               <span>{t.nav_ai_studio}</span>
@@ -268,38 +274,37 @@ export const Header: React.FC<HeaderProps> = ({
 
           </nav>
 
-          {/* Action Buttons: Registration Dropdown + Admin Button + User Avatar */}
+          {/* Action Buttons: Registration Dropdown + User Avatar */}
           <div className="flex items-center gap-2">
             
             {/* Registration Dropdown Button */}
             <div className="relative">
               <button
                 onClick={() => setRegDropdownOpen(!regDropdownOpen)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-[#06B6D4] to-teal-500 hover:from-cyan-400 text-slate-950 shadow-md transition-all cursor-pointer"
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-[#06B6D4] to-teal-500 hover:from-cyan-400 text-slate-950 shadow-md transition-all cursor-pointer"
               >
                 <UserPlus className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">{t.nav_register}</span>
-                <span className="sm:hidden">{t.nav_register}</span>
+                <span>انضمام وتسجيل</span>
                 <ChevronDown className="w-3 h-3" />
               </button>
 
               {regDropdownOpen && (
-                <div className="absolute left-0 sm:right-0 mt-2 w-60 bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl p-1.5 z-50 animate-in fade-in slide-in-from-top-2 text-right">
+                <div className="absolute left-0 sm:right-0 mt-2 w-64 bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl p-2 z-50 animate-in fade-in slide-in-from-top-2 text-right space-y-1">
                   <div className="text-[10px] text-slate-400 font-bold px-2 py-1 border-b border-slate-800">
-                    {t.choose_reg_type}
+                    اختر نوع الحساب للانضمام:
                   </div>
 
                   <button
                     onClick={() => {
-                      onOpenRegistration('institute');
+                      onOpenRegistration('learner');
                       setRegDropdownOpen(false);
                     }}
                     className="w-full flex items-center gap-2 px-3 py-2 text-xs font-bold text-slate-200 hover:bg-slate-800 hover:text-white rounded-xl text-right transition-colors"
                   >
-                    <Building2 className="w-4 h-4 text-purple-400 shrink-0" />
+                    <Award className="w-4 h-4 text-emerald-400 shrink-0" />
                     <div>
-                      <div>{t.reg_institute}</div>
-                      <div className="text-[10px] text-slate-400 font-normal">{t.reg_institute_sub}</div>
+                      <div>تسجيل كباحث عن التكوين</div>
+                      <div className="text-[10px] text-slate-400 font-normal">تفعيل جواز المهارات وحضور الدورات</div>
                     </div>
                   </button>
 
@@ -312,42 +317,37 @@ export const Header: React.FC<HeaderProps> = ({
                   >
                     <GraduationCap className="w-4 h-4 text-[#06B6D4] shrink-0" />
                     <div>
-                      <div>{t.reg_trainer}</div>
-                      <div className="text-[10px] text-slate-400 font-normal">{t.reg_trainer_sub}</div>
+                      <div>تسجيل كمكوّن معتمد</div>
+                      <div className="text-[10px] text-slate-400 font-normal">نشر الدورات وإدارة المسجلين والأرباح</div>
                     </div>
                   </button>
 
                   <button
                     onClick={() => {
-                      onOpenRegistration('learner');
+                      onOpenRegistration('institute');
                       setRegDropdownOpen(false);
                     }}
                     className="w-full flex items-center gap-2 px-3 py-2 text-xs font-bold text-slate-200 hover:bg-slate-800 hover:text-white rounded-xl text-right transition-colors"
                   >
-                    <Award className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <Building2 className="w-4 h-4 text-purple-400 shrink-0" />
                     <div>
-                      <div>{t.reg_learner}</div>
-                      <div className="text-[10px] text-slate-400 font-normal">{t.reg_learner_sub}</div>
+                      <div>اعتماد مركز / مؤسسة تكوين</div>
+                      <div className="text-[10px] text-slate-400 font-normal">شراكة مؤسسية وإصدار شارات المركز</div>
                     </div>
                   </button>
                 </div>
               )}
             </div>
 
-            {/* Admin Portal Button */}
+            {/* User Profile Mini Badge (Learner Profile shortcut) */}
             <button
-              onClick={onOpenAdmin}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/40 hover:border-amber-400 transition-all cursor-pointer shadow-sm"
-              title={t.admin_title}
-            >
-              <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
-              <span>{t.nav_admin}</span>
-            </button>
-
-            {/* User Profile Mini Badge */}
-            <button
-              onClick={onScrollToPassport}
+              onClick={() => {
+                onChangeViewRole('student');
+                setActiveTab('passport');
+                onScrollToPassport();
+              }}
               className="flex items-center gap-2 p-1 sm:px-2.5 sm:py-1 rounded-xl bg-slate-800/70 border border-slate-700/60 hover:border-[#06B6D4]/40 transition-all text-right cursor-pointer"
+              title="جواز مهاراتي"
             >
               <div className="relative">
                 <img
@@ -359,11 +359,11 @@ export const Header: React.FC<HeaderProps> = ({
                   L{userProfile.level}
                 </span>
               </div>
-              <div className="hidden sm:block">
-                <div className="text-[11px] font-bold text-white leading-tight">
+              <div className="hidden md:block text-right">
+                <div className="text-xs font-bold text-slate-200 truncate max-w-[90px]">
                   {userProfile.name}
                 </div>
-                <div className="text-[9px] text-[#06B6D4] font-medium">
+                <div className="text-[10px] text-[#06B6D4] font-medium">
                   {userProfile.xp} XP
                 </div>
               </div>
@@ -372,79 +372,87 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Mobile Hamburger Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="xl:hidden p-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white"
+              className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 xl:hidden"
+              aria-label="القائمة"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
 
           </div>
-        </div>
 
-        {/* Mobile Dropdown Menu */}
-        {mobileMenuOpen && (
-          <div className="xl:hidden py-4 border-t border-slate-800 flex flex-col gap-2 animate-in fade-in slide-in-from-top-2">
-            
-            {/* Mobile Language Switcher Row */}
-            <div className="p-2.5 bg-slate-950/80 rounded-xl border border-slate-800 flex items-center justify-between">
-              <span className="text-[11px] text-slate-400 font-bold">اللغة / Language:</span>
-              <LanguageSwitcher
-                currentLang={currentLang}
-                onLanguageChange={(lang) => {
-                  onLanguageChange(lang);
+        </div>
+      </div>
+
+      {/* Mobile Drawer Menu (No Admin button) */}
+      {mobileMenuOpen && (
+        <div className="xl:hidden bg-slate-900 border-b border-slate-800 px-4 py-4 space-y-3 animate-in slide-in-from-top-4">
+          
+          {/* Mobile Portal Swapper */}
+          <div className="p-2.5 bg-slate-950/80 rounded-xl border border-slate-800 space-y-1.5">
+            <div className="text-[10px] text-slate-400 font-bold">الفضاء المعروض:</div>
+            <div className="grid grid-cols-2 gap-1.5">
+              <button
+                onClick={() => {
+                  handleGoHome();
                   setMobileMenuOpen(false);
                 }}
-              />
+                className={`py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 ${
+                  activeViewRole === 'student' ? 'bg-emerald-600 text-white' : 'bg-slate-900 text-slate-300'
+                }`}
+              >
+                <User className="w-3.5 h-3.5" />
+                <span>فضاء المتدرب</span>
+              </button>
+              <button
+                onClick={() => {
+                  onChangeViewRole('instructor');
+                  setMobileMenuOpen(false);
+                }}
+                className={`py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 ${
+                  activeViewRole === 'instructor' ? 'bg-[#06B6D4] text-slate-950' : 'bg-slate-900 text-slate-300'
+                }`}
+              >
+                <GraduationCap className="w-3.5 h-3.5" />
+                <span>فضاء المكوّن</span>
+              </button>
             </div>
+          </div>
 
-            {/* Mobile Role Swapper */}
-            <div className="p-2.5 bg-slate-950/80 rounded-xl border border-slate-800 space-y-1.5">
-              <div className="text-[10px] text-slate-400 font-bold">{t.role_swapper_title}</div>
-              <div className="grid grid-cols-3 gap-1">
-                <button
-                  onClick={() => {
-                    onChangeViewRole('student');
-                    setMobileMenuOpen(false);
-                  }}
-                  className={`py-1.5 rounded text-[10px] font-bold ${
-                    activeViewRole === 'student' ? 'bg-emerald-600 text-white' : 'bg-slate-900 text-slate-300'
-                  }`}
-                >
-                  {t.role_student}
-                </button>
-                <button
-                  onClick={() => {
-                    onChangeViewRole('instructor');
-                    setMobileMenuOpen(false);
-                  }}
-                  className={`py-1.5 rounded text-[10px] font-bold ${
-                    activeViewRole === 'instructor' ? 'bg-[#06B6D4] text-slate-950' : 'bg-slate-900 text-slate-300'
-                  }`}
-                >
-                  {t.role_instructor}
-                </button>
-                <button
-                  onClick={() => {
-                    onChangeViewRole('admin');
-                    setMobileMenuOpen(false);
-                  }}
-                  className={`py-1.5 rounded text-[10px] font-bold ${
-                    activeViewRole === 'admin' ? 'bg-amber-500 text-slate-950' : 'bg-slate-900 text-amber-300'
-                  }`}
-                >
-                  {t.role_admin}
-                </button>
-              </div>
-            </div>
+          {/* Mobile Links */}
+          <div className="grid grid-cols-2 gap-2 text-xs font-bold">
+            <button
+              onClick={() => {
+                handleGoHome();
+                setMobileMenuOpen(false);
+              }}
+              className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-800/80 text-white text-right"
+            >
+              <Home className="w-4 h-4 text-[#06B6D4]" />
+              <span>الرئيسية</span>
+            </button>
+
+            <button
+              onClick={() => {
+                onChangeViewRole('student');
+                setActiveTab('marketplace');
+                onScrollToCourses();
+                setMobileMenuOpen(false);
+              }}
+              className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-800/80 text-white text-right"
+            >
+              <Compass className="w-4 h-4 text-[#06B6D4]" />
+              <span>سوق التكوينات</span>
+            </button>
 
             <button
               onClick={() => {
                 onOpenSpecializations();
                 setMobileMenuOpen(false);
               }}
-              className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-slate-800/80 text-[#06B6D4] text-right font-bold text-xs"
+              className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-800/80 text-[#06B6D4] text-right"
             >
               <Layers className="w-4 h-4 text-[#06B6D4]" />
-              <span>{t.nav_specializations}</span>
+              <span>دليل التخصصات</span>
             </button>
 
             <button
@@ -452,45 +460,23 @@ export const Header: React.FC<HeaderProps> = ({
                 onOpenInstructorsDirectory?.();
                 setMobileMenuOpen(false);
               }}
-              className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-slate-800/80 text-cyan-300 text-right font-bold text-xs"
+              className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-800/80 text-cyan-300 text-right"
             >
               <GraduationCap className="w-4 h-4 text-[#06B6D4]" />
-              <span>دليل المكوّنين ومراكز التكوين</span>
+              <span>دليل المكوّنين</span>
             </button>
 
             <button
               onClick={() => {
-                onOpenAdmin();
-                setMobileMenuOpen(false);
-              }}
-              className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-amber-950/40 border border-amber-800/50 text-amber-300 text-right font-bold text-xs"
-            >
-              <ShieldCheck className="w-4 h-4 text-amber-400" />
-              <span>{t.admin_title}</span>
-            </button>
-
-            <button
-              onClick={() => {
-                setActiveTab('marketplace');
-                onScrollToCourses();
-                setMobileMenuOpen(false);
-              }}
-              className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-slate-800/60 text-slate-200 text-right font-medium text-xs"
-            >
-              <Compass className="w-4 h-4 text-[#06B6D4]" />
-              <span>{t.nav_marketplace}</span>
-            </button>
-
-            <button
-              onClick={() => {
+                onChangeViewRole('student');
                 setActiveTab('passport');
                 onScrollToPassport();
                 setMobileMenuOpen(false);
               }}
-              className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-slate-800/60 text-slate-200 text-right font-medium text-xs"
+              className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-800/80 text-purple-300 text-right"
             >
               <Award className="w-4 h-4 text-[#7C3AED]" />
-              <span>{t.nav_passport} ({userProfile.badges.length})</span>
+              <span>جواز المهارات</span>
             </button>
 
             <button
@@ -498,15 +484,16 @@ export const Header: React.FC<HeaderProps> = ({
                 onOpenChat();
                 setMobileMenuOpen(false);
               }}
-              className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-cyan-950/40 border border-cyan-800/50 text-cyan-300 text-right font-semibold text-xs"
+              className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-800/80 text-cyan-300 text-right"
             >
               <Bot className="w-4 h-4 text-[#06B6D4]" />
-              <span>{t.nav_advisor}</span>
+              <span>المستشار الذكي</span>
             </button>
           </div>
-        )}
 
-      </div>
+        </div>
+      )}
+
     </header>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { 
+  Home,
   GraduationCap, 
   Users, 
   DollarSign, 
@@ -34,6 +35,7 @@ interface InstructorViewProps {
   onOpenCreateCourse: () => void;
   onRequestPayout: (courseTitle: string, amount: number) => void;
   onOpenCertificateModal?: (cert: TrustCertificate) => void;
+  onBackToLearner?: () => void;
   currentLang?: Language;
 }
 
@@ -53,6 +55,7 @@ export const InstructorView: React.FC<InstructorViewProps> = ({
   onOpenCreateCourse,
   onRequestPayout,
   onOpenCertificateModal,
+  onBackToLearner,
   currentLang = 'ar',
 }) => {
   const t = translations[currentLang];
@@ -178,13 +181,25 @@ export const InstructorView: React.FC<InstructorViewProps> = ({
           </div>
         </div>
 
-        <button
-          onClick={() => setActiveTab('publisher')}
-          className="px-5 py-3 rounded-2xl bg-gradient-to-r from-[#7C3AED] to-[#06B6D4] text-white text-xs sm:text-sm font-bold shadow-xl shadow-[#7C3AED]/20 hover:shadow-cyan-500/25 transition-all flex items-center gap-2 cursor-pointer shrink-0"
-        >
-          <Plus className="w-4 h-4" />
-          <span>إعلان ونشر تكوين جديد</span>
-        </button>
+        <div className="flex items-center gap-2 flex-wrap">
+          {onBackToLearner && (
+            <button
+              onClick={onBackToLearner}
+              className="px-4 py-2.5 rounded-2xl bg-slate-800 hover:bg-slate-750 text-slate-200 hover:text-white text-xs font-bold border border-slate-700 transition-all flex items-center gap-1.5 cursor-pointer shadow-md"
+            >
+              <Home className="w-4 h-4 text-emerald-400" />
+              <span>الرئيسية (فضاء المتدرب)</span>
+            </button>
+          )}
+
+          <button
+            onClick={() => setActiveTab('publisher')}
+            className="px-5 py-3 rounded-2xl bg-gradient-to-r from-[#7C3AED] to-[#06B6D4] text-white text-xs sm:text-sm font-bold shadow-xl shadow-[#7C3AED]/20 hover:shadow-cyan-500/25 transition-all flex items-center gap-2 cursor-pointer shrink-0"
+          >
+            <Plus className="w-4 h-4" />
+            <span>إعلان ونشر تكوين جديد</span>
+          </button>
+        </div>
       </div>
 
       {/* 3 Operational View Tabs */}
