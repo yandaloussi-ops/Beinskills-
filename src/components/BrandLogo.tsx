@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
+import defaultLogo from '../assets/images/beinskills_logo_1792099109840.jpg';
 
-export const LOGO_IMAGE_URL = '/src/assets/images/beinskills_logo_1792099109840.jpg';
+export const LOGO_IMAGE_URL = defaultLogo;
 
 interface BrandLogoProps {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -23,6 +24,8 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
   className = '',
   onClick,
 }) => {
+  const [imageError, setImageError] = useState(false);
+
   const sizeMap = {
     xs: {
       imageSize: 'w-7 h-7',
@@ -73,12 +76,19 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
       {/* 3D Infinity Emblem Icon */}
       <div className="relative shrink-0">
         <div className="relative rounded-2xl overflow-hidden p-0.5 bg-gradient-to-tr from-[#7C3AED] via-[#9333EA] to-[#06B6D4] shadow-lg shadow-[#7C3AED]/30 group-hover:shadow-cyan-500/30 transition-all duration-300">
-          <img
-            src={LOGO_IMAGE_URL}
-            alt="BeInSkills Official Logo"
-            className={`${currentSize.imageSize} rounded-[14px] object-cover bg-[#0F172A] transform group-hover:scale-105 transition-transform duration-300`}
-            referrerPolicy="no-referrer"
-          />
+          {!imageError ? (
+            <img
+              src={LOGO_IMAGE_URL}
+              alt="BeInSkills Official Logo"
+              onError={() => setImageError(true)}
+              className={`${currentSize.imageSize} rounded-[14px] object-cover bg-[#0F172A] transform group-hover:scale-105 transition-transform duration-300`}
+              referrerPolicy="no-referrer"
+            />
+          ) : (
+            <div className={`${currentSize.imageSize} rounded-[14px] bg-gradient-to-br from-[#7C3AED] to-[#06B6D4] flex items-center justify-center font-black text-white text-xs shadow-inner`}>
+              BS
+            </div>
+          )}
         </div>
 
         {/* Ambient Pulsing Glow Dot */}
