@@ -35,6 +35,7 @@ interface HeaderProps {
   setActiveTab: (tab: 'all' | 'marketplace' | 'passport') => void;
   onOpenAdmin: () => void;
   onOpenSpecializations: () => void;
+  onOpenInstructorsDirectory?: () => void;
   onOpenRegistration: (role?: RegistrationRole) => void;
   activeViewRole: ActiveViewRole;
   onChangeViewRole: (role: ActiveViewRole) => void;
@@ -54,6 +55,7 @@ export const Header: React.FC<HeaderProps> = ({
   setActiveTab,
   onOpenAdmin,
   onOpenSpecializations,
+  onOpenInstructorsDirectory,
   onOpenRegistration,
   activeViewRole,
   onChangeViewRole,
@@ -200,6 +202,15 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <Layers className="w-3.5 h-3.5 text-[#06B6D4]" />
               <span>{t.nav_specializations}</span>
+            </button>
+
+            {/* Instructors & Centers Directory */}
+            <button
+              onClick={onOpenInstructorsDirectory}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-200 hover:text-cyan-300 hover:bg-slate-800/60 transition-all border border-slate-800 hover:border-cyan-500/30 cursor-pointer"
+            >
+              <GraduationCap className="w-3.5 h-3.5 text-[#06B6D4]" />
+              <span>دليل المكوّنين والمراكز</span>
             </button>
 
             {/* Marketplace */}
@@ -434,6 +445,17 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <Layers className="w-4 h-4 text-[#06B6D4]" />
               <span>{t.nav_specializations}</span>
+            </button>
+
+            <button
+              onClick={() => {
+                onOpenInstructorsDirectory?.();
+                setMobileMenuOpen(false);
+              }}
+              className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-slate-800/80 text-cyan-300 text-right font-bold text-xs"
+            >
+              <GraduationCap className="w-4 h-4 text-[#06B6D4]" />
+              <span>دليل المكوّنين ومراكز التكوين</span>
             </button>
 
             <button
