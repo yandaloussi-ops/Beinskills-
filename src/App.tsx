@@ -33,6 +33,7 @@ import { ImageGeneratorModal } from './components/ImageGeneratorModal';
 import { BadgeDetailModal } from './components/BadgeDetailModal';
 import { RegistrationModal, RegistrationRole } from './components/RegistrationModal';
 import { AllSpecializationsModal } from './components/AllSpecializationsModal';
+import { InstructorsDirectoryModal } from './components/InstructorsDirectoryModal';
 import { AdminDashboardModal } from './components/AdminDashboardModal';
 import { TrustCertificateModal } from './components/TrustCertificateModal';
 import { Language, translations, LANGUAGES } from './translations';
@@ -118,6 +119,7 @@ export default function App() {
   // Admin & Directory Modals
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isSpecializationsOpen, setIsSpecializationsOpen] = useState(false);
+  const [isInstructorsDirectoryOpen, setIsInstructorsDirectoryOpen] = useState(false);
   const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
   const [registrationRole, setRegistrationRole] = useState<RegistrationRole>('learner');
 
@@ -493,6 +495,7 @@ export default function App() {
         setActiveTab={setActiveTab}
         onOpenAdmin={() => setIsAdminOpen(true)}
         onOpenSpecializations={() => setIsSpecializationsOpen(true)}
+        onOpenInstructorsDirectory={() => setIsInstructorsDirectoryOpen(true)}
         onOpenRegistration={openRegistrationWithRole}
         activeViewRole={activeViewRole}
         onChangeViewRole={(role) => {
@@ -926,6 +929,21 @@ export default function App() {
         onLearnerRegistered={handleLearnerRegistered}
         onInstituteRegistered={handleInstituteRegistered}
         onTrainerRegistered={handleTrainerRegistered}
+      />
+
+      {/* 9. Public Instructors & Institutes Directory Modal */}
+      <InstructorsDirectoryModal
+        isOpen={isInstructorsDirectoryOpen}
+        onClose={() => setIsInstructorsDirectoryOpen(false)}
+        onSelectInstructorCourses={(trainerName) => {
+          setSearchQuery(trainerName);
+          setActiveTab('marketplace');
+          coursesSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }}
+        onOpenRegistrationForTrainer={() => {
+          setRegistrationRole('trainer');
+          setIsRegistrationOpen(true);
+        }}
       />
 
     </div>
