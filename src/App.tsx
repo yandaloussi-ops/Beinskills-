@@ -647,9 +647,12 @@ export default function App() {
                   </span>
                 </div>
 
-                {/* Public Instructors & Institutes Directory Card (Safe & Public) */}
+                {/* Instructors & Training Centers Portal Card */}
                 <div
-                  onClick={() => setIsInstructorsDirectoryOpen(true)}
+                  onClick={() => {
+                    setActiveViewRole('instructor');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
                   className="glass-card p-5 rounded-2xl border border-purple-500/30 hover:border-purple-400 bg-slate-900/60 hover:bg-slate-800/80 transition-all cursor-pointer flex items-center justify-between gap-4 group"
                 >
                   <div className="flex items-center gap-3.5">
@@ -658,15 +661,15 @@ export default function App() {
                     </div>
                     <div>
                       <h4 className="text-sm font-bold text-white group-hover:text-purple-300 transition-colors">
-                        دليل المكوّنين ومراكز التكوين المعتمدة
+                        فضاء المكوّنين ومراكز التكوين المعتمدة
                       </h4>
                       <p className="text-xs text-slate-400 mt-0.5">
-                        استكشف نخبة المكوّنين والمراكز المعتمدة برتب الثقة الماسية والذهبية
+                        دخول المكوّنين لإدارة التكوينات ومتابعة الطلاب، أو تقديم طلب اعتماد جديد
                       </p>
                     </div>
                   </div>
                   <span className="text-xs font-bold text-purple-300 bg-purple-950/80 border border-purple-800/50 px-3 py-1.5 rounded-xl shrink-0 group-hover:bg-purple-500 group-hover:text-white transition-all">
-                    تصفح الدليل
+                    دخول الفضاء 🚀
                   </span>
                 </div>
 
