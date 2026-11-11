@@ -146,41 +146,176 @@ export const InstructorAuthLanding: React.FC<InstructorAuthLandingProps> = ({
       <div className="flex items-center justify-between flex-wrap gap-3">
         <button
           onClick={onBackToLearner}
-          className="flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 transition-all cursor-pointer shadow-md"
+          className="flex items-center gap-2 text-xs font-bold text-slate-300 hover:text-white px-4 py-2.5 rounded-2xl bg-slate-900 border border-slate-800 hover:bg-slate-800 transition-all cursor-pointer shadow-md"
         >
           <ArrowLeft className="w-4 h-4 text-emerald-400 rotate-180" />
           <span>العودة إلى الصفحة الرئيسية (فضاء المتدرب)</span>
         </button>
 
-        <div className="flex items-center gap-2 text-xs text-slate-400 bg-slate-900/60 px-3 py-1.5 rounded-xl border border-slate-800">
+        <div className="flex items-center gap-2 text-xs text-slate-400 bg-slate-900/80 px-3.5 py-2 rounded-2xl border border-slate-800">
           <ShieldCheck className="w-4 h-4 text-emerald-400" />
           <span>الخصوصية المالية والبيانات البنكية محمية 100%</span>
         </div>
       </div>
 
-      {/* Main Hero Showcase */}
-      <div className="glass-card rounded-3xl p-6 sm:p-10 border border-[#7C3AED]/40 bg-gradient-to-br from-slate-900 via-slate-900/90 to-purple-950/40 shadow-2xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-80 h-80 bg-[#7C3AED]/15 rounded-full blur-3xl pointer-events-none"></div>
+      {/* ============================================================== */}
+      {/* MAIN INSTRUCTORS SPACE BOX (مربع فضاء المكوّنين والمدربين الرئيسي) */}
+      {/* ============================================================== */}
+      <div className="glass-card rounded-3xl p-6 sm:p-8 border border-[#7C3AED]/40 bg-gradient-to-br from-slate-900 via-slate-900/95 to-purple-950/40 shadow-2xl relative overflow-hidden space-y-8">
+        
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[#7C3AED]/15 rounded-full blur-3xl pointer-events-none"></div>
 
-        <div className="relative space-y-4 max-w-3xl">
+        {/* Header inside the box */}
+        <div className="relative space-y-3 max-w-3xl">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-[#7C3AED]/20 text-purple-300 border border-[#7C3AED]/40">
             <GraduationCap className="w-4 h-4 text-[#06B6D4]" />
-            <span>منظومة التميز الأكاديمي والاعتماد المهني للمكوّنين</span>
+            <span>فضاء المكوّنين والمدربين ومراكز التكوين المعتمدة</span>
           </div>
 
-          <h1 className="text-2xl sm:text-4xl font-black text-white leading-tight">
-            فضاء المكوّنين والمدربين ومراكز التكوين المعتمدة
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white leading-tight">
+            بوابة الإدارة، نشر التكوينات، والاعتماد المهني
           </h1>
 
           <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-            بيئة تنافسية راقية تكرّس معايير الجودة والشفافية. نبرز هنا مؤشرات أداء المكوّنين ورتب الاعتماد (الماسية، الذهبية، والفضية) لتحفيز المتدربين على اختيار أفضل المسارات، وخلق تنافس مهني شريف بين المكوّنين، مع حماية تامة لسرية البيانات المالية.
+            اختر الدخول المباشر إلى لوحة إدارة دوراتك ومتابعة طلابك، أو قدم طلب اعتماد شريك تدريبي جديد للانضمام إلى شبكة التميز المهني.
           </p>
         </div>
 
-        {/* 4 Public Motivational & Benchmark Indicators */}
-        <div className="mt-8 grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* ============================================================== */}
+        {/* THE TWO PRIMARY ENTRY CARDS (روابط الدخول إلى الصفحتين مباشرة في الأعلى) */}
+        {/* ============================================================== */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
           
-          <div className="p-4 rounded-2xl bg-slate-950/70 border border-cyan-500/30">
+          {/* Card 1: دخول المكوّن إلى فضاء عمله ومحفظته 🔒 */}
+          <div className="rounded-3xl p-6 bg-slate-950/80 border border-[#06B6D4]/40 hover:border-[#06B6D4] transition-all space-y-5 shadow-2xl flex flex-col justify-between">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-2xl bg-[#06B6D4]/20 text-[#06B6D4] shadow-md">
+                  <KeyRound className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-white flex items-center gap-1.5">
+                    <span>دخول المكوّن إلى فضاء عمله ومحفظته</span>
+                    <Lock className="w-3.5 h-3.5 text-amber-400" />
+                  </h3>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    الوصول مشفّر ومحمي لإدارة الدورات ورصد الحضور والوضعية المالية
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-2 pt-1">
+                <label className="block text-xs font-bold text-slate-300">
+                  اختر حساب المكوّن المعتمد:
+                </label>
+                <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                  {instructorAccounts.map((acc) => {
+                    const isSelected = selectedAccountId === acc.id;
+                    return (
+                      <div
+                        key={acc.id}
+                        onClick={() => setSelectedAccountId(acc.id)}
+                        className={`p-3 rounded-2xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
+                          isSelected
+                            ? 'border-[#06B6D4] bg-cyan-950/50 text-white shadow-md'
+                            : 'border-slate-800 bg-slate-900/60 hover:bg-slate-800/80 text-slate-300'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-xl bg-slate-800 text-slate-200 flex items-center justify-center font-bold text-xs shrink-0">
+                            {acc.name.charAt(0)}
+                          </div>
+                          <div>
+                            <div className="text-xs font-bold line-clamp-1">{acc.name}</div>
+                            <div className="text-[10px] text-slate-500 line-clamp-1 font-mono">{acc.email}</div>
+                          </div>
+                        </div>
+                        <div className="shrink-0 flex items-center gap-2">
+                          {getTierBadge(acc.trustTier)}
+                          {isSelected && <CheckCircle2 className="w-4 h-4 text-[#06B6D4]" />}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* Glowing Action Button 1 */}
+            <button
+              onClick={() => {
+                const target = instructorAccounts.find((a) => a.id === selectedAccountId);
+                if (target) onSelectInstructor(target);
+              }}
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#7C3AED] via-[#6366F1] to-[#06B6D4] hover:from-[#6D28D9] hover:to-[#0891B2] text-white text-xs sm:text-sm font-bold shadow-xl shadow-[#7C3AED]/30 hover:shadow-cyan-500/35 transition-all flex items-center justify-center gap-2 cursor-pointer transform hover:-translate-y-0.5"
+            >
+              <UserCheck className="w-4 h-4" />
+              <span>الدخول إلى لوحة إدارة التكوينات والمسجلين</span>
+            </button>
+          </div>
+
+          {/* Card 2: طلب اعتماد شريك تدريبي جديد */}
+          <div className="rounded-3xl p-6 bg-slate-950/80 border border-[#7C3AED]/40 hover:border-purple-400 transition-all space-y-6 shadow-2xl flex flex-col justify-between">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-2xl bg-[#7C3AED]/20 text-purple-300 shadow-md">
+                  <Building2 className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-white">
+                    طلب اعتماد شريك تدريبي جديد
+                  </h3>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    انضم كمدرب معتمد أو مؤسسة تكوين وابدأ في استقبال المتدربين
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-2.5 pt-1 text-xs text-slate-300">
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                  <span><strong>نيل جواز الثقة والاعتماد المهني:</strong> تصنيف ملفك برتبة ماسية أو ذهبية معترف بها.</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                  <span><strong>ضمان المدفوعات بنسبة 100%:</strong> تحصيل الرسوم في حساب وسيط Escrow وصرف 88% صافية.</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                  <span><strong>إصدار شارات التخرج الرقمية:</strong> منح شارات معتمدة في جوازات مهارات المتدربين.</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                  <span><strong>سرية تامة لأرقامك المالية:</strong> أرباحك وعملياتك محجوبة عن الجمهور ومخصصة لك وحدك.</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Glowing Action Buttons 2 */}
+            <div className="space-y-2.5">
+              <button
+                onClick={() => onOpenRegistration('trainer')}
+                className="w-full py-3 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold border border-slate-700 hover:border-[#06B6D4] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md"
+              >
+                <GraduationCap className="w-4 h-4 text-[#06B6D4]" />
+                <span>تقديم طلب اعتماد مكوّن فردي (Trainer)</span>
+              </button>
+
+              <button
+                onClick={() => onOpenRegistration('institute')}
+                className="w-full py-3 rounded-2xl bg-purple-950/70 hover:bg-purple-900/70 text-purple-200 text-xs font-bold border border-purple-800 hover:border-purple-600 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md"
+              >
+                <Building2 className="w-4 h-4 text-purple-300" />
+                <span>اعتماد معهد أو مركز تكوين (Training Institute)</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        {/* 4 Performance & Quality Indicators inside the box */}
+        <div className="pt-4 border-t border-slate-800/80 grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="p-4 rounded-2xl bg-slate-950/60 border border-cyan-500/30">
             <div className="flex items-center justify-between text-slate-400 text-xs">
               <span>مؤشر الجودة الفائقة</span>
               <Award className="w-4 h-4 text-[#06B6D4]" />
@@ -191,7 +326,7 @@ export const InstructorAuthLanding: React.FC<InstructorAuthLandingProps> = ({
             <div className="text-[11px] text-cyan-300 mt-0.5">معايير الاعتماد المؤسسي الصارم</div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-slate-950/70 border border-emerald-500/30">
+          <div className="p-4 rounded-2xl bg-slate-950/60 border border-emerald-500/30">
             <div className="flex items-center justify-between text-slate-400 text-xs">
               <span>نسبة رضا المتدربين</span>
               <Star className="w-4 h-4 text-emerald-400 fill-emerald-400" />
@@ -202,7 +337,7 @@ export const InstructorAuthLanding: React.FC<InstructorAuthLandingProps> = ({
             <div className="text-[11px] text-emerald-300 mt-0.5">من آلاف التقييمات الموثقة</div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-slate-950/70 border border-purple-500/30">
+          <div className="p-4 rounded-2xl bg-slate-950/60 border border-purple-500/30">
             <div className="flex items-center justify-between text-slate-400 text-xs">
               <span>إجمالي المتخرجين</span>
               <Users className="w-4 h-4 text-purple-400" />
@@ -213,7 +348,7 @@ export const InstructorAuthLanding: React.FC<InstructorAuthLandingProps> = ({
             <div className="text-[11px] text-purple-400 mt-0.5">نالوا شارات جواز المهارات</div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-slate-950/70 border border-amber-500/30">
+          <div className="p-4 rounded-2xl bg-slate-950/60 border border-amber-500/30">
             <div className="flex items-center justify-between text-slate-400 text-xs">
               <span>حماية الضمان المالي</span>
               <ShieldCheck className="w-4 h-4 text-amber-400" />
@@ -223,11 +358,13 @@ export const InstructorAuthLanding: React.FC<InstructorAuthLandingProps> = ({
             </div>
             <div className="text-[11px] text-amber-400 mt-0.5">رسوم مؤمنة بحساب Escrow</div>
           </div>
-
         </div>
+
       </div>
 
-      {/* SECTION 1: COMPETITIVE BENCHMARK AMONG INSTRUCTORS (خلق التنافسية المحمودة) */}
+      {/* ============================================================== */}
+      {/* SECTION 1: COMPETITIVE BENCHMARK AMONG INSTRUCTORS */}
+      {/* ============================================================== */}
       <section className="space-y-4">
         <div className="flex items-center justify-between flex-wrap gap-2 border-b border-slate-800 pb-3">
           <div className="flex items-center gap-2">
@@ -294,7 +431,9 @@ export const InstructorAuthLanding: React.FC<InstructorAuthLandingProps> = ({
         </div>
       </section>
 
-      {/* SECTION 2: MOTIVATIONAL COURSE INDICATORS (تحفيز المتدربين على التسجيل) */}
+      {/* ============================================================== */}
+      {/* SECTION 2: MOTIVATIONAL COURSE INDICATORS */}
+      {/* ============================================================== */}
       <section className="space-y-4">
         <div className="flex items-center justify-between flex-wrap gap-2 border-b border-slate-800 pb-3">
           <div className="flex items-center gap-2">
@@ -404,135 +543,6 @@ export const InstructorAuthLanding: React.FC<InstructorAuthLandingProps> = ({
                 className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#06B6D4] text-white text-xs font-bold cursor-pointer hover:shadow-md"
               >
                 حجز المقعد الآن
-              </button>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      {/* SECTION 3: INSTRUCTOR PRIVATE WORKPLACE ENTRY & REGISTRATION */}
-      <section className="pt-4 border-t border-slate-800/80">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          
-          {/* Card 1: تسجيل دخول المكوّن لإدارة حسابه */}
-          <div className="glass-card rounded-3xl p-6 sm:p-7 border border-slate-800 bg-slate-900/90 space-y-5 shadow-xl flex flex-col justify-between">
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="p-3 rounded-2xl bg-[#06B6D4]/20 text-[#06B6D4]">
-                  <KeyRound className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-white">
-                    دخول المكوّن إلى فضاء عمله ومحفظته 🔒
-                  </h3>
-                  <p className="text-xs text-slate-400">
-                    الوصول مشفّر ومحمي لإدارة الدورات ورصد الحضور والوضعية المالية
-                  </p>
-                </div>
-              </div>
-
-              <div className="space-y-2 pt-1">
-                <label className="block text-xs font-bold text-slate-300">
-                  اختر حساب المكوّن المعتمد:
-                </label>
-                <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
-                  {instructorAccounts.map((acc) => {
-                    const isSelected = selectedAccountId === acc.id;
-                    return (
-                      <div
-                        key={acc.id}
-                        onClick={() => setSelectedAccountId(acc.id)}
-                        className={`p-3 rounded-2xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
-                          isSelected
-                            ? 'border-[#06B6D4] bg-cyan-950/40 text-white'
-                            : 'border-slate-800 bg-slate-950/60 hover:bg-slate-800/80 text-slate-300'
-                        }`}
-                      >
-                        <div className="flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded-xl bg-slate-800 text-slate-200 flex items-center justify-center font-bold text-xs shrink-0">
-                            {acc.name.charAt(0)}
-                          </div>
-                          <div>
-                            <div className="text-xs font-bold line-clamp-1">{acc.name}</div>
-                            <div className="text-[10px] text-slate-500 line-clamp-1">{acc.email}</div>
-                          </div>
-                        </div>
-                        <div className="shrink-0 flex items-center gap-2">
-                          {getTierBadge(acc.trustTier)}
-                          {isSelected && <CheckCircle2 className="w-4 h-4 text-[#06B6D4]" />}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-
-            <button
-              onClick={() => {
-                const target = instructorAccounts.find((a) => a.id === selectedAccountId);
-                if (target) onSelectInstructor(target);
-              }}
-              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#7C3AED] to-[#06B6D4] text-white text-xs sm:text-sm font-bold shadow-xl shadow-[#7C3AED]/25 hover:shadow-cyan-500/30 transition-all flex items-center justify-center gap-2 cursor-pointer"
-            >
-              <UserCheck className="w-4 h-4" />
-              <span>الدخول إلى لوحة إدارة التكوينات والمسجلين</span>
-            </button>
-          </div>
-
-          {/* Card 2: طلب اعتماد مكوّن أو مركز جديد */}
-          <div className="glass-card rounded-3xl p-6 sm:p-7 border border-[#7C3AED]/30 bg-slate-900/90 space-y-6 shadow-xl flex flex-col justify-between">
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="p-3 rounded-2xl bg-[#7C3AED]/20 text-purple-300">
-                  <Building2 className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-white">
-                    طلب اعتماد شريك تدريبي جديد
-                  </h3>
-                  <p className="text-xs text-slate-400">
-                    انضم كمدرب معتمد أو مؤسسة تكوين وابدأ في استقبال المتدربين
-                  </p>
-                </div>
-              </div>
-
-              <div className="space-y-2.5 pt-1 text-xs text-slate-300">
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                  <span><strong>نيل جواز الثقة والاعتماد المهني:</strong> تصنيف ملفك برتبة ماسية أو ذهبية معترف بها.</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                  <span><strong>ضمان المدفوعات بنسبة 100%:</strong> تحصيل الرسوم في حساب وسيط Escrow وصرف 88% صافية.</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                  <span><strong>إصدار شارات التخرج الرقمية:</strong> منح شارات معتمدة في جوازات مهارات المتدربين.</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                  <span><strong>سرية تامة لأرقامك المالية:</strong> أرباحك وعملياتك محجوبة عن الجمهور ومخصصة لك وحدك.</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-2.5">
-              <button
-                onClick={() => onOpenRegistration('trainer')}
-                className="w-full py-3 rounded-2xl bg-slate-800 hover:bg-slate-750 text-white text-xs font-bold border border-slate-700 hover:border-[#06B6D4] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md"
-              >
-                <GraduationCap className="w-4 h-4 text-[#06B6D4]" />
-                <span>تقديم طلب اعتماد مكوّن فردي (Trainer)</span>
-              </button>
-
-              <button
-                onClick={() => onOpenRegistration('institute')}
-                className="w-full py-3 rounded-2xl bg-purple-950/60 hover:bg-purple-900/60 text-purple-200 text-xs font-bold border border-purple-800/80 hover:border-purple-600 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md"
-              >
-                <Building2 className="w-4 h-4 text-purple-300" />
-                <span>اعتماد معهد أو مركز تكوين (Training Institute)</span>
               </button>
             </div>
           </div>
