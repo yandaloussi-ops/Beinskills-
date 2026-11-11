@@ -11,8 +11,7 @@ import {
   Layers,
   Building2,
   GraduationCap,
-  UserPlus,
-  ShieldCheck
+  UserPlus
 } from 'lucide-react';
 import { RegistrationRole } from './RegistrationModal';
 import { Language, translations } from '../translations';
@@ -24,8 +23,8 @@ interface HeroProps {
   onOpenChat: () => void;
   onOpenImageGen: () => void;
   onOpenSpecializations: () => void;
+  onOpenInstructorsDirectory?: () => void;
   onOpenRegistration: (role: RegistrationRole) => void;
-  onOpenAdmin: () => void;
   currentLang: Language;
 }
 
@@ -35,8 +34,8 @@ export const Hero: React.FC<HeroProps> = ({
   onOpenChat,
   onOpenImageGen,
   onOpenSpecializations,
+  onOpenInstructorsDirectory,
   onOpenRegistration,
-  onOpenAdmin,
   currentLang,
 }) => {
   const t = translations[currentLang];
@@ -69,7 +68,7 @@ export const Hero: React.FC<HeroProps> = ({
             </div>
           </div>
 
-          {/* Eyebrow Pill with Admin & All Disciplines Triggers */}
+          {/* Eyebrow Pill with Disciplines & Instructors Triggers (No Admin exposure) */}
           <div className="inline-flex flex-wrap items-center justify-center gap-2 px-4 py-1.5 rounded-full bg-slate-800/80 border border-slate-700/80 shadow-md">
             <span className="flex h-2 w-2 rounded-full bg-[#06B6D4] animate-ping" />
             <span className="text-xs font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#06B6D4] to-[#7C3AED]">
@@ -83,14 +82,18 @@ export const Hero: React.FC<HeroProps> = ({
               <Layers className="w-3 h-3" />
               <span>{t.all_domains}</span>
             </button>
-            <span className="text-slate-500 hidden sm:inline">|</span>
-            <button
-              onClick={onOpenAdmin}
-              className="text-xs text-amber-300 hover:text-amber-200 font-bold flex items-center gap-1 cursor-pointer hidden sm:flex"
-            >
-              <ShieldCheck className="w-3 h-3 text-amber-400" />
-              <span>{t.nav_admin}</span>
-            </button>
+            {onOpenInstructorsDirectory && (
+              <>
+                <span className="text-slate-500 hidden sm:inline">|</span>
+                <button
+                  onClick={onOpenInstructorsDirectory}
+                  className="text-xs text-cyan-300 hover:text-cyan-200 font-bold flex items-center gap-1 cursor-pointer hidden sm:flex"
+                >
+                  <GraduationCap className="w-3 h-3 text-[#06B6D4]" />
+                  <span>دليل المكوّنين</span>
+                </button>
+              </>
+            )}
           </div>
 
           {/* Main Headline with exact slogan */}

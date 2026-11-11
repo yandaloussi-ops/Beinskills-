@@ -15,9 +15,11 @@ import {
   Building2, 
   ChevronDown, 
   Wallet, 
-  Check 
+  Check,
+  Lock,
+  UserCheck
 } from 'lucide-react';
-import { UserProfile, ActiveViewRole } from '../types';
+import { UserProfile, ActiveViewRole, UserAccount } from '../types';
 import { RegistrationRole } from './RegistrationModal';
 import { Language, translations } from '../translations';
 import { LanguageSwitcher } from './LanguageSwitcher';
@@ -38,6 +40,7 @@ interface HeaderProps {
   onOpenRegistration: (role?: RegistrationRole) => void;
   activeViewRole: ActiveViewRole;
   onChangeViewRole: (role: ActiveViewRole) => void;
+  currentInstructor?: UserAccount | null;
   currentLang: Language;
   onLanguageChange: (lang: Language) => void;
 }
@@ -57,6 +60,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenRegistration,
   activeViewRole,
   onChangeViewRole,
+  currentInstructor,
   currentLang,
   onLanguageChange,
 }) => {
@@ -112,7 +116,12 @@ export const Header: React.FC<HeaderProps> = ({
                 }`}
               >
                 <GraduationCap className="w-3 h-3" />
-                <span>فضاء المكوّن والمؤسسة</span>
+                <span>
+                  {currentInstructor ? `فضاء: ${currentInstructor.name}` : 'بوابة المكوّنين'}
+                </span>
+                {currentInstructor && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                )}
               </button>
             </div>
           </div>
@@ -207,7 +216,7 @@ export const Header: React.FC<HeaderProps> = ({
                 onScrollToCourses();
               }}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                activeTab === 'marketplace'
+                activeTab === 'marketplace' && activeViewRole === 'student'
                   ? 'bg-cyan-950/80 text-[#06B6D4] border border-[#06B6D4]/50 shadow-sm'
                   : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
               }`}
@@ -225,7 +234,7 @@ export const Header: React.FC<HeaderProps> = ({
               <span>دليل التخصصات</span>
             </button>
 
-            {/* 4. دليل المكوّنين والمراكز Instructors Directory */}
+            {/* 4. دليل المكوّنين والمراكز Instructors Directory (Public & Safe) */}
             <button
               onClick={onOpenInstructorsDirectory}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-200 hover:text-cyan-300 hover:bg-slate-800/60 transition-all border border-slate-800 hover:border-cyan-500/30 cursor-pointer"
@@ -242,7 +251,7 @@ export const Header: React.FC<HeaderProps> = ({
                 onScrollToPassport();
               }}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                activeTab === 'passport'
+                activeTab === 'passport' && activeViewRole === 'student'
                   ? 'bg-[#7C3AED]/25 text-purple-300 border border-[#7C3AED]/40'
                   : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
               }`}
@@ -413,7 +422,7 @@ export const Header: React.FC<HeaderProps> = ({
                 }`}
               >
                 <GraduationCap className="w-3.5 h-3.5" />
-                <span>فضاء المكوّن</span>
+                <span>{currentInstructor ? currentInstructor.name : 'بوابة المكوّنين'}</span>
               </button>
             </div>
           </div>
