@@ -1,3 +1,5 @@
+// BeInSkills Master Platform - Version 2.5 (Updated 14 Nov 2026)
+// Integrated Navigation, Instructor Accreditation Gateway & Protected Accounting
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { 
   INITIAL_COURSES, 
