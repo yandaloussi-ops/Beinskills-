@@ -263,7 +263,7 @@ export const InstructorView: React.FC<InstructorViewProps> = ({
               title="العودة للصفحة الرئيسية للمنصة"
             >
               <Home className="w-4 h-4 text-emerald-400" />
-              <span>الرئيسية (فضاء المتدرب)</span>
+              <span>العودة للرئيسية</span>
             </button>
           )}
 

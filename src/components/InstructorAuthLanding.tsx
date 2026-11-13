@@ -149,7 +149,7 @@ export const InstructorAuthLanding: React.FC<InstructorAuthLandingProps> = ({
           className="flex items-center gap-2 text-xs font-bold text-slate-300 hover:text-white px-4 py-2.5 rounded-2xl bg-slate-900 border border-slate-800 hover:bg-slate-800 transition-all cursor-pointer shadow-md"
         >
           <ArrowLeft className="w-4 h-4 text-emerald-400 rotate-180" />
-          <span>العودة إلى الصفحة الرئيسية (فضاء المتدرب)</span>
+          <span>العودة إلى الصفحة الرئيسية</span>
         </button>
 
         <div className="flex items-center gap-2 text-xs text-slate-400 bg-slate-900/80 px-3.5 py-2 rounded-2xl border border-slate-800">
@@ -182,11 +182,68 @@ export const InstructorAuthLanding: React.FC<InstructorAuthLandingProps> = ({
         </div>
 
         {/* ============================================================== */}
-        {/* THE TWO PRIMARY ENTRY CARDS (روابط الدخول إلى الصفحتين مباشرة في الأعلى) */}
+        {/* THE TWO PRIMARY ENTRY CARDS (الزر الأول للتسجيل والزر الثاني لدخول البروفايل الخاص) */}
         {/* ============================================================== */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
           
-          {/* Card 1: دخول المكوّن إلى فضاء عمله ومحفظته 🔒 */}
+          {/* Card 1 (الزر الأول): طلب اعتماد مكوّن أو مؤسسة تكوين (التسجيل) */}
+          <div className="rounded-3xl p-6 bg-slate-950/80 border border-[#7C3AED]/40 hover:border-purple-400 transition-all space-y-6 shadow-2xl flex flex-col justify-between">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-2xl bg-[#7C3AED]/20 text-purple-300 shadow-md">
+                  <Building2 className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-white">
+                    1. التسجيل وطلب اعتماد شريك تدريبي جديد
+                  </h3>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    انضم كمدرب معتمد أو مؤسسة تكوين وابدأ في استقبال المتدربين
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-2.5 pt-1 text-xs text-slate-300">
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                  <span><strong>نيل جواز الثقة والاعتماد المهني:</strong> تصنيف ملفك برتبة ماسية أو ذهبية معترف بها.</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                  <span><strong>ضمان المدفوعات بنسبة 100%:</strong> تحصيل الرسوم في حساب وسيط Escrow وصرف 88% صافية.</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                  <span><strong>إصدار شارات التخرج الرقمية:</strong> منح شارات معتمدة في جوازات مهارات المتدربين.</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                  <span><strong>سرية تامة لأرقامك المالية:</strong> أرباحك وعملياتك محجوبة عن الجمهور ومخصصة لك وحدك.</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Glowing Action Buttons 1 (التسجيل) */}
+            <div className="space-y-2.5">
+              <button
+                onClick={() => onOpenRegistration('trainer')}
+                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs sm:text-sm font-bold shadow-lg shadow-purple-600/30 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <GraduationCap className="w-4 h-4 text-cyan-200" />
+                <span>تقديم طلب اعتماد مكوّن فردي (Trainer)</span>
+              </button>
+
+              <button
+                onClick={() => onOpenRegistration('institute')}
+                className="w-full py-3 rounded-2xl bg-slate-900 hover:bg-slate-800 text-purple-200 text-xs font-bold border border-purple-800 hover:border-purple-600 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md"
+              >
+                <Building2 className="w-4 h-4 text-purple-300" />
+                <span>اعتماد معهد أو مركز تكوين (Training Institute)</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Card 2 (الزر الثاني): دخول البروفايل الخاص وإدارة التكوينات 🔒 */}
           <div className="rounded-3xl p-6 bg-slate-950/80 border border-[#06B6D4]/40 hover:border-[#06B6D4] transition-all space-y-5 shadow-2xl flex flex-col justify-between">
             <div className="space-y-4">
               <div className="flex items-center gap-3">
@@ -195,7 +252,7 @@ export const InstructorAuthLanding: React.FC<InstructorAuthLandingProps> = ({
                 </div>
                 <div>
                   <h3 className="text-base font-bold text-white flex items-center gap-1.5">
-                    <span>دخول المكوّن إلى فضاء عمله ومحفظته</span>
+                    <span>2. دخول البروفايل الخاص ولوحة التحكم</span>
                     <Lock className="w-3.5 h-3.5 text-amber-400" />
                   </h3>
                   <p className="text-xs text-slate-400 mt-0.5">
@@ -241,74 +298,17 @@ export const InstructorAuthLanding: React.FC<InstructorAuthLandingProps> = ({
               </div>
             </div>
 
-            {/* Glowing Action Button 1 */}
+            {/* Glowing Action Button 2 (دخول البروفايل) */}
             <button
               onClick={() => {
                 const target = instructorAccounts.find((a) => a.id === selectedAccountId);
                 if (target) onSelectInstructor(target);
               }}
-              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#7C3AED] via-[#6366F1] to-[#06B6D4] hover:from-[#6D28D9] hover:to-[#0891B2] text-white text-xs sm:text-sm font-bold shadow-xl shadow-[#7C3AED]/30 hover:shadow-cyan-500/35 transition-all flex items-center justify-center gap-2 cursor-pointer transform hover:-translate-y-0.5"
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#06B6D4] via-[#0284C7] to-[#7C3AED] hover:from-cyan-400 hover:to-purple-600 text-slate-950 sm:text-white text-xs sm:text-sm font-bold shadow-xl shadow-cyan-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer transform hover:-translate-y-0.5"
             >
               <UserCheck className="w-4 h-4" />
-              <span>الدخول إلى لوحة إدارة التكوينات والمسجلين</span>
+              <span>الدخول إلى البروفايل الخاص ولوحة التحكم</span>
             </button>
-          </div>
-
-          {/* Card 2: طلب اعتماد شريك تدريبي جديد */}
-          <div className="rounded-3xl p-6 bg-slate-950/80 border border-[#7C3AED]/40 hover:border-purple-400 transition-all space-y-6 shadow-2xl flex flex-col justify-between">
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="p-3 rounded-2xl bg-[#7C3AED]/20 text-purple-300 shadow-md">
-                  <Building2 className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-white">
-                    طلب اعتماد شريك تدريبي جديد
-                  </h3>
-                  <p className="text-xs text-slate-400 mt-0.5">
-                    انضم كمدرب معتمد أو مؤسسة تكوين وابدأ في استقبال المتدربين
-                  </p>
-                </div>
-              </div>
-
-              <div className="space-y-2.5 pt-1 text-xs text-slate-300">
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                  <span><strong>نيل جواز الثقة والاعتماد المهني:</strong> تصنيف ملفك برتبة ماسية أو ذهبية معترف بها.</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                  <span><strong>ضمان المدفوعات بنسبة 100%:</strong> تحصيل الرسوم في حساب وسيط Escrow وصرف 88% صافية.</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                  <span><strong>إصدار شارات التخرج الرقمية:</strong> منح شارات معتمدة في جوازات مهارات المتدربين.</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                  <span><strong>سرية تامة لأرقامك المالية:</strong> أرباحك وعملياتك محجوبة عن الجمهور ومخصصة لك وحدك.</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Glowing Action Buttons 2 */}
-            <div className="space-y-2.5">
-              <button
-                onClick={() => onOpenRegistration('trainer')}
-                className="w-full py-3 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold border border-slate-700 hover:border-[#06B6D4] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md"
-              >
-                <GraduationCap className="w-4 h-4 text-[#06B6D4]" />
-                <span>تقديم طلب اعتماد مكوّن فردي (Trainer)</span>
-              </button>
-
-              <button
-                onClick={() => onOpenRegistration('institute')}
-                className="w-full py-3 rounded-2xl bg-purple-950/70 hover:bg-purple-900/70 text-purple-200 text-xs font-bold border border-purple-800 hover:border-purple-600 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md"
-              >
-                <Building2 className="w-4 h-4 text-purple-300" />
-                <span>اعتماد معهد أو مركز تكوين (Training Institute)</span>
-              </button>
-            </div>
           </div>
 
         </div>
