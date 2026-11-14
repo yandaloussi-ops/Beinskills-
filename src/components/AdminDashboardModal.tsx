@@ -319,7 +319,7 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
 
                 {/* 2. عمولة المنصة الحالية */}
                 <div className="glass-card p-4 rounded-2xl border border-purple-500/30 bg-purple-950/20">
-                  <div className="text-[11px] text-purple-300 font-medium">عمولة المنصة الحالية (12%)</div>
+                  <div className="text-[11px] text-purple-300 font-medium">عمولة المنصة الحالية (20%)</div>
                   <div className="text-xl sm:text-2xl font-black text-purple-400 mt-1 font-mono">
                     {totalPlatformFees.toLocaleString()} <span className="text-xs">درهم</span>
                   </div>
@@ -499,7 +499,7 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
                 <div>
                   <h4 className="text-sm font-bold text-white">إدارة التحويلات المالية والحساب الوسيط (Escrow)</h4>
                   <p className="text-xs text-slate-400">
-                    متابعة العمولات المقتطعة (12%)، وتوثيق تحرير المبالغ المعلقة إلى حسابات المكونين
+                    متابعة العمولات المقتطعة (20%)، وتوثيق تحرير المبالغ المعلقة إلى حسابات المكونين (80% صافية)
                   </p>
                 </div>
 
@@ -525,8 +525,8 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
                       <th className="p-3">المكوّن</th>
                       <th className="p-3">الدافع ونوع الدفع</th>
                       <th className="p-3">المبلغ الإجمالي</th>
-                      <th className="p-3">عمولة المنصة (12%)</th>
-                      <th className="p-3">صافي المكوّن</th>
+                      <th className="p-3">عمولة المنصة (20%)</th>
+                      <th className="p-3">صافي المكوّن (80%)</th>
                       <th className="p-3">حالة الحساب الوسيط</th>
                       <th className="p-3 text-center">الإجراء</th>
                     </tr>

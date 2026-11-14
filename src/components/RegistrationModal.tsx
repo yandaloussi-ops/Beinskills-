@@ -22,6 +22,8 @@ import {
 } from 'lucide-react';
 import { UserProfile } from '../types';
 import { ALL_SPECIALIZATIONS, SpecializationCategory } from '../data/specializationsData';
+import { Language } from '../translations';
+import { ElectronicContractModal } from './ElectronicContractModal';
 
 export type RegistrationRole = 'institute' | 'trainer' | 'learner';
 
@@ -32,6 +34,7 @@ interface RegistrationModalProps {
   onLearnerRegistered?: (newProfileData: Partial<UserProfile>) => void;
   onInstituteRegistered?: (instituteData: any) => void;
   onTrainerRegistered?: (trainerData: any) => void;
+  currentLang?: Language;
 }
 
 export const RegistrationModal: React.FC<RegistrationModalProps> = ({
@@ -41,10 +44,19 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
   onLearnerRegistered,
   onInstituteRegistered,
   onTrainerRegistered,
+  currentLang = 'ar',
 }) => {
   const [selectedRole, setSelectedRole] = useState<RegistrationRole>(defaultRole);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [isContractModalOpen, setIsContractModalOpen] = useState(false);
+  const [contractAccepted, setContractAccepted] = useState(false);
+  const [signedContractInfo, setSignedContractInfo] = useState<{
+    contractNumber: string;
+    signedAt: string;
+    signatoryName: string;
+    lang: Language;
+  } | null>(null);
 
   // Categories list from taxonomy
   const [categories] = useState<SpecializationCategory[]>(ALL_SPECIALIZATIONS);
@@ -799,6 +811,103 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                 </div>
               )}
 
+              {/* ================= MANDATORY ELECTRONIC CONTRACT SECTION (4 LANGUAGES) ================= */}
+              <div className="pt-2">
+                {selectedRole !== 'learner' ? (
+                  <div className="p-4 rounded-2xl bg-gradient-to-r from-slate-950 to-purple-950/40 border border-purple-800/40 space-y-3 shadow-inner">
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <div className="flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-[#06B6D4]" />
+                        <h5 className="text-xs font-bold text-white">
+                          العقد الإلكتروني الإلزامي للاعتماد المهني والشراكة وقواعد Escrow
+                        </h5>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setIsContractModalOpen(true)}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#7C3AED]/20 hover:bg-[#7C3AED]/30 text-purple-300 hover:text-white border border-purple-700/50 text-[11px] font-bold transition-all cursor-pointer shadow-sm"
+                      >
+                        <Globe className="w-3.5 h-3.5 text-[#06B6D4]" />
+                        <span>قراءة وتوقيع العقد (متاح بـ 4 لغات 🇲🇦 🇬🇧 🇫🇷 🇪🇸)</span>
+                      </button>
+                    </div>
+
+                    <p className="text-[11px] text-slate-400 leading-relaxed">
+                      يحدد هذا العقد انتفاء علاقة الشغل، المسؤولية الحصرية للمدرب عن المحتوى، دور المنصة كوسيط تقني محايد، نسب عمولة المنصة (20%)، شروط تحرير دفعات الحساب الوسيط Escrow (80% صافية للمكوّن)، وضوابط الاسترجاع الحصرية للمنصة وبند النزاهة.
+                    </p>
+
+                    {signedContractInfo && (
+                      <div className="p-2.5 rounded-xl bg-emerald-950/60 border border-emerald-600/80 flex items-center justify-between text-[11px] text-emerald-300">
+                        <span className="flex items-center gap-1.5 font-bold">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                          <span>تم توقيع العقد إلكترونياً بنجاح بواسطة: {signedContractInfo.signatoryName}</span>
+                        </span>
+                        <span className="font-mono text-cyan-300">{signedContractInfo.contractNumber}</span>
+                      </div>
+                    )}
+
+                    <label className="flex items-start gap-2.5 text-xs text-slate-300 cursor-pointer pt-1">
+                      <input
+                        type="checkbox"
+                        required
+                        checked={contractAccepted}
+                        onChange={(e) => setContractAccepted(e.target.checked)}
+                        className="mt-0.5 rounded border-slate-700 text-[#06B6D4] focus:ring-[#06B6D4] w-4 h-4 bg-slate-900"
+                      />
+                      <span className="leading-relaxed">
+                        أقر بصفتي الممثل القانوني بأنني قرأت وفهمت بنود عقد الاعتماد المهني وقواعد الضمان المالي Escrow وأوافق عليها بصيغة التوقيع الرقمي الملزم. *
+                      </span>
+                    </label>
+                  </div>
+                ) : (
+                  <div className="p-4 rounded-2xl bg-gradient-to-r from-slate-950 to-emerald-950/40 border border-emerald-800/40 space-y-3 shadow-inner">
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <div className="flex items-center gap-2">
+                        <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                        <h5 className="text-xs font-bold text-white">
+                          ميثاق التدريب والضمان المالي وحماية حقوق المتدرب عبر Escrow
+                        </h5>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setIsContractModalOpen(true)}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-950/60 hover:bg-emerald-900/60 text-emerald-300 hover:text-white border border-emerald-700/50 text-[11px] font-bold transition-all cursor-pointer shadow-sm"
+                      >
+                        <Globe className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>الاطلاع على ميثاق الحماية (متاح بـ 4 لغات 🇲🇦 🇬🇧 🇫🇷 🇪🇸)</span>
+                      </button>
+                    </div>
+
+                    <p className="text-[11px] text-slate-400 leading-relaxed">
+                      يضمن هذا الميثاق حماية أموال تسجيلك بنسبة 100% في حساب وسيط Escrow، سياسة الاسترجاع الخاضعة حصراً لضوابط وتحكيم المنصة، دور المنصة كوسيط تقني محايد، ومسؤولية المدرب عن المحتوى وحقك في التقييم ونيل شارات جواز المهارات.
+                    </p>
+
+                    {signedContractInfo && (
+                      <div className="p-2.5 rounded-xl bg-emerald-950/60 border border-emerald-600/80 flex items-center justify-between text-[11px] text-emerald-300">
+                        <span className="flex items-center gap-1.5 font-bold">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                          <span>تم تأكيد وقبول الميثاق باسم: {signedContractInfo.signatoryName}</span>
+                        </span>
+                        <span className="font-mono text-cyan-300">{signedContractInfo.contractNumber}</span>
+                      </div>
+                    )}
+
+                    <label className="flex items-start gap-2.5 text-xs text-slate-300 cursor-pointer pt-1">
+                      <input
+                        type="checkbox"
+                        required
+                        checked={contractAccepted}
+                        onChange={(e) => setContractAccepted(e.target.checked)}
+                        className="mt-0.5 rounded border-slate-700 text-emerald-400 focus:ring-emerald-400 w-4 h-4 bg-slate-900"
+                      />
+                      <span className="leading-relaxed">
+                        أوافق على ميثاق حماية المتدرب وشروط الضمان المالي Escrow والتزم بنسبة الحضور (80%) المقررة لنيل الشارة الرسمية. *
+                      </span>
+                    </label>
+                  </div>
+                )}
+              </div>
+
               {/* Submit Buttons */}
               <div className="pt-4 border-t border-slate-800 flex items-center justify-between">
                 <button
@@ -833,6 +942,21 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
         </div>
 
       </div>
+
+      {/* Electronic Contract Modal (Interactive 4-Language Legal Document) */}
+      <ElectronicContractModal
+        isOpen={isContractModalOpen}
+        onClose={() => setIsContractModalOpen(false)}
+        contractType={selectedRole === 'learner' ? 'learner_protection_agreement' : 'trainer_institute_sla'}
+        signatoryName={selectedRole === 'trainer' ? trainerName : selectedRole === 'institute' ? instName : learnerName}
+        signatoryRole={selectedRole}
+        initialLang={currentLang}
+        onContractSigned={(contractData) => {
+          setSignedContractInfo(contractData);
+          setContractAccepted(true);
+          setIsContractModalOpen(false);
+        }}
+      />
     </div>
   );
 };

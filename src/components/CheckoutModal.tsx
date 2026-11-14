@@ -74,8 +74,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     finalAmount = finalAmount - walletDeductionApplied;
   }
 
-  const platformFee = Math.round(finalAmount * 0.12); // 12% Platform Commission
-  const instructorPayout = finalAmount - platformFee;
+  const platformFee = Math.round(finalAmount * 0.20); // 20% Platform Commission
+  const instructorPayout = finalAmount - platformFee; // 80% Net Instructor Payout
 
   const handleProcessPayment = (e: React.FormEvent) => {
     e.preventDefault();

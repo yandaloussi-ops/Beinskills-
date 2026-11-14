@@ -915,7 +915,7 @@ export const InstructorView: React.FC<InstructorViewProps> = ({
               <div className="text-2xl font-black text-emerald-400 mt-1 font-mono">
                 {netInstructorTotal.toLocaleString()} <span className="text-xs">درهم</span>
               </div>
-              <div className="text-[10px] text-slate-400 mt-1">حصتك الصافية (88% بعد خصم رسوم المنصة)</div>
+              <div className="text-[10px] text-slate-400 mt-1">حصتك الصافية (80% بعد خصم رسوم المنصة 20%)</div>
             </div>
 
             <div className="p-4 rounded-2xl bg-slate-950/70 border border-amber-500/30">
@@ -959,7 +959,7 @@ export const InstructorView: React.FC<InstructorViewProps> = ({
 
                     <div className="text-left flex items-center gap-4">
                       <div>
-                        <span className="text-[10px] text-slate-400 block">صافي مستحقاتك (88%):</span>
+                        <span className="text-[10px] text-slate-400 block">صافي مستحقاتك (80%):</span>
                         <span className="font-bold text-emerald-400 font-mono text-sm">
                           +{tx.instructorPayout} درهم
                         </span>
