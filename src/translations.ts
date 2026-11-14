@@ -117,7 +117,7 @@ export const translations = {
     admin_title: 'لوحة تحكم الإدارة العامة والتحصيل المالي (Admin Panel)',
     admin_mode_notice: 'أنت الآن في وضع إدارة المنصة (Admin Mode)',
     admin_kpi_gross: 'إجمالي المبالغ المحصلة (Gross)',
-    admin_kpi_platform_fee: 'عمولة المنصة الحالية (12%)',
+    admin_kpi_platform_fee: 'عمولة المنصة الحالية (20%)',
     admin_kpi_escrow: 'معلقة بالضمان الوسيط (Escrow)',
     admin_kpi_active_courses: 'التكوينات المعتمدة والنشطة',
     admin_kpi_users: 'المستخدمون والشركاء',
@@ -139,7 +139,7 @@ export const translations = {
 
     // Footer
     footer_rights: '© 2026 BeInSkills. جميع الحقوق محفوظة • نظام الحساب الوسيط Escrow المحمي للتحصيل المالي.',
-    footer_status: 'عمولة المنصة 12% • تحصيل بنكي آمن ومحفظة كاشباك',
+    footer_status: 'عمولة المنصة 20% • تحصيل بنكي آمن ومحفظة كاشباك',
 
     // Banners & Extra UI
     specializations_banner_title: 'دليل كافة التخصصات والميادين المعرفية والمهنية',
@@ -266,7 +266,7 @@ export const translations = {
     admin_title: 'Admin Control Center & Escrow Management',
     admin_mode_notice: 'You are currently in Admin Mode',
     admin_kpi_gross: 'Total Gross Collected',
-    admin_kpi_platform_fee: 'Platform Commission (12%)',
+    admin_kpi_platform_fee: 'Platform Commission (20%)',
     admin_kpi_escrow: 'Held in Escrow Vault',
     admin_kpi_active_courses: 'Active Approved Courses',
     admin_kpi_users: 'Users & Partners',
@@ -288,7 +288,7 @@ export const translations = {
 
     // Footer
     footer_rights: '© 2026 BeInSkills. All rights reserved • Escrow Protected Monetization System.',
-    footer_status: '12% Platform Fee • Bank-grade Security & Skill Wallet Cashback',
+    footer_status: '20% Platform Fee • Bank-grade Security & Skill Wallet Cashback',
 
     // Banners & Extra UI
     specializations_banner_title: 'Directory of All Disciplines & Professional Fields',
@@ -415,7 +415,7 @@ export const translations = {
     admin_title: 'Panneau d’Administration et Gestion Financière',
     admin_mode_notice: 'Vous êtes actuellement en Mode Administrateur',
     admin_kpi_gross: 'Total des montants collectés (Brut)',
-    admin_kpi_platform_fee: 'Commission plateforme (12%)',
+    admin_kpi_platform_fee: 'Commission plateforme (20%)',
     admin_kpi_escrow: 'Fonds en séquestre (Escrow)',
     admin_kpi_active_courses: 'Formations actives approuvées',
     admin_kpi_users: 'Utilisateurs & Partenaires',
@@ -437,7 +437,7 @@ export const translations = {
 
     // Footer
     footer_rights: '© 2026 BeInSkills. Tous droits réservés • Système de monétisation avec séquestre Escrow.',
-    footer_status: 'Commission 12% • Sécurité bancaire & Cashback de compétences',
+    footer_status: 'Commission 20% • Sécurité bancaire & Cashback de compétences',
 
     // Banners & Extra UI
     specializations_banner_title: 'Répertoire complet des filières et domaines professionnels',
@@ -564,7 +564,7 @@ export const translations = {
     admin_title: 'Panel de Control de Administración y Pagos',
     admin_mode_notice: 'Te encuentras en Modo Administrador',
     admin_kpi_gross: 'Total recaudado (Bruto)',
-    admin_kpi_platform_fee: 'Comisión de la plataforma (12%)',
+    admin_kpi_platform_fee: 'Comisión de la plataforma (20%)',
     admin_kpi_escrow: 'Fondos en custodia (Escrow)',
     admin_kpi_active_courses: 'Formaciones activas aprobadas',
     admin_kpi_users: 'Usuarios y socios',
@@ -586,7 +586,7 @@ export const translations = {
 
     // Footer
     footer_rights: '© 2026 BeInSkills. Todos los derechos reservados • Sistema con custodia Escrow protegida.',
-    footer_status: 'Comisión 12% • Seguridad bancaria y Cashback de habilidades',
+    footer_status: 'Comisión 20% • Seguridad bancaria y Cashback de habilidades',
 
     // Banners & Extra UI
     specializations_banner_title: 'Directorio de Todas las Disciplinas y Ámbitos Profesionales',
