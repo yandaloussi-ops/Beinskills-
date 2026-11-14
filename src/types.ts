@@ -1,7 +1,7 @@
 export type CourseMode = 'remote' | 'in-person';
 export type CourseApprovalStatus = 'approved' | 'pending' | 'rejected';
 export type ActiveViewRole = 'student' | 'instructor' | 'admin';
-export type PaymentType = 'escrow-full' | 'installments' | 'wallet' | 'b2b-group';
+export type PaymentType = 'escrow-full' | 'installments' | 'wallet' | 'b2b-group' | 'agency-cash';
 export type EscrowStatus = 'held_in_escrow' | 'released' | 'refunded';
 export type UserAccountRole = 'student' | 'instructor' | 'institute_b2b';
 export type UserAccountStatus = 'active' | 'suspended' | 'blocked';
@@ -205,4 +205,38 @@ export interface Evaluation3DSubmission {
   overall3DScore: number;
   writtenFeedback: string;
 }
+
+// ==========================================
+// AXIS 3: ESCROW TRANCHES & DISPUTE TYPES
+// ==========================================
+
+export interface EscrowTranche {
+  trancheNumber: 1 | 2 | 3;
+  title: string;
+  percentage: number; // 25, 35, 40
+  amount: number;
+  status: 'pending' | 'ready_for_release' | 'released';
+  conditionMet: boolean;
+  conditionDescription: string;
+  releasedAt?: string;
+  bankTransferReference?: string;
+}
+
+export interface EscrowDispute {
+  id: string;
+  courseId: string;
+  courseTitle: string;
+  learnerName: string;
+  learnerEmail: string;
+  instructorName: string;
+  amount: number;
+  claimedAt: string;
+  reasonCategory: 'hours_reduction' | 'syllabus_breach' | 'pre_course_cancellation' | 'trainer_absence';
+  description: string;
+  learnerAttendanceRate: number;
+  status: 'under_review' | 'approved_full_refund' | 'approved_partial_refund' | 'rejected_funds_released';
+  arbitrationVerdict?: string;
+  resolvedAt?: string;
+}
+
 

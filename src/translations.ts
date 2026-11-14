@@ -166,6 +166,12 @@ export const translations = {
     eval3d_radar: 'مؤشر الجودة الثلاثي الموزون (المكوّن 40% • المحتوى 40% • اللوجستيك 20%)',
     attendance_threshold: 'عتبة 80% الإلزامية لنيل الشارة الرسمية بجواز المهارات',
     attendance_qr_pin: 'نظام إدارة الحضور الذكي بالـ QR والـ PIN للقاعة وبث الجلسات',
+    escrow_tranches_title: 'نظام الصرف التدريجي للضمان المالي (Escrow Tranches Architecture)',
+    escrow_tranche_1: 'الدفعة الأولى (25%): عند انطلاق الدورة وتأكيد أول حصة',
+    escrow_tranche_2: 'الدفعة الثانية (35%): عند إنجاز 50% من الساعات التدريبية',
+    escrow_tranche_3: 'الدفعة الثالثة (40%): ختام التكوين وإصدار الشارات + 48h أمان',
+    escrow_agency_cash: 'الأداء نقداً بوكالات الأداء المعتمدة (CashPlus / Wafacash / Barid Cash)',
+    escrow_dispute_desk: 'مكتب التحكيم وفض النزاعات والضمان البنكي',
   },
 
   en: {
@@ -319,6 +325,12 @@ export const translations = {
     eval3d_radar: '3D Weighted Quality Index (Instructor 40% • Content 40% • Logistics 20%)',
     attendance_threshold: 'Mandatory 80% Minimum Attendance for Official Skills Badge Unlock',
     attendance_qr_pin: 'Smart Attendance Engine: Classroom Dynamic QR, PIN & Virtual Watchtime',
+    escrow_tranches_title: 'Escrow Milestone Tranches Architecture (25% - 35% - 40%)',
+    escrow_tranche_1: 'Tranche 1 (25%): Course Kickoff & Session 1 Attendance Verification',
+    escrow_tranche_2: 'Tranche 2 (35%): 50% Training Hours Completion & Progress Check',
+    escrow_tranche_3: 'Tranche 3 (40%): Course Completion, Badges Issued & 48h Safety Buffer',
+    escrow_agency_cash: 'Cash Payment at Authorized Partner Agencies (CashPlus / Wafacash / Barid Cash)',
+    escrow_dispute_desk: 'Escrow Dispute Arbitration & Refund Desk',
   },
 
   fr: {
@@ -472,6 +484,12 @@ export const translations = {
     eval3d_radar: 'Indice Qualité Global Pondéré (Formateur 40% • Contenu 40% • Logistique 20%)',
     attendance_threshold: 'Seuil d’assiduité minimal de 80% requis pour le badge certifié',
     attendance_qr_pin: 'Gestion intelligente d’émargement : QR Code dynamique, code PIN et temps de diffusion',
+    escrow_tranches_title: 'Architecture de déblocage progressif sous séquestre (25% - 35% - 40%)',
+    escrow_tranche_1: 'Tranche 1 (25%) : Démarrage de la session et présence séance 1 vérifiée',
+    escrow_tranche_2: 'Tranche 2 (35%) : 50% des heures de cours effectuées et validées',
+    escrow_tranche_3: 'Tranche 3 (40%) : Fin du cours, badges délivrés et réserve de sécurité 48h',
+    escrow_agency_cash: 'Paiement en espèces dans les agences partenaires (CashPlus / Wafacash / Barid Cash)',
+    escrow_dispute_desk: 'Bureau d’arbitrage des litiges et remboursements sous séquestre',
   },
 
   es: {
@@ -625,5 +643,11 @@ export const translations = {
     eval3d_radar: 'Índice de Calidad 3D Ponderado (Formador 40% • Temario 40% • Logística 20%)',
     attendance_threshold: 'Asistencia obligatoria del 80% como mínimo para desbloquear la insignia',
     attendance_qr_pin: 'Sistema inteligente de asistencia con código QR dinámico, PIN de aula y control de retransmisión',
+    escrow_tranches_title: 'Arquitectura de liberación por tramos en garantía Escrow (25% - 35% - 40%)',
+    escrow_tranche_1: 'Tramo 1 (25%): Inicio de la formación y asistencia verificada a la 1ª sesión',
+    escrow_tranche_2: 'Tramo 2 (35%): 50% de las horas lectivas completadas y progreso validado',
+    escrow_tranche_3: 'Tramo 3 (40%): Conclusión del curso, insignias emitidas y margen de seguridad 48h',
+    escrow_agency_cash: 'Pago en efectivo en agencias colaboradoras (CashPlus / Wafacash / Barid Cash)',
+    escrow_dispute_desk: 'Mesa de arbitraje de disputas y reembolsos en garantía Escrow',
   },
 };
