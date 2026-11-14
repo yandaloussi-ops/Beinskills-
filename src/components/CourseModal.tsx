@@ -14,7 +14,9 @@ import {
   ArrowLeft,
   CreditCard,
   Lock,
-  Wallet
+  Wallet,
+  Sliders,
+  Layers
 } from 'lucide-react';
 import { Course } from '../types';
 
@@ -24,6 +26,7 @@ interface CourseModalProps {
   onClose: () => void;
   onEnrollConfirm: (courseId: string, studentName: string) => void;
   onOpenCheckout: (course: Course) => void;
+  onOpen3DEvaluation?: (course: Course) => void;
   isAlreadyEnrolled: boolean;
 }
 
@@ -33,6 +36,7 @@ export const CourseModal: React.FC<CourseModalProps> = ({
   onClose,
   onEnrollConfirm,
   onOpenCheckout,
+  onOpen3DEvaluation,
   isAlreadyEnrolled,
 }) => {
   if (!isOpen || !course) return null;
@@ -221,7 +225,7 @@ export const CourseModal: React.FC<CourseModalProps> = ({
               </button>
             </div>
           ) : (
-            <div className="p-4 rounded-2xl bg-emerald-950/60 border border-emerald-700/60 text-center space-y-1">
+            <div className="p-4 rounded-2xl bg-emerald-950/60 border border-emerald-700/60 text-center space-y-3">
               <div className="text-sm font-bold text-emerald-300 flex items-center justify-center gap-1.5">
                 <CheckCircle2 className="w-5 h-5" />
                 <span>أنت مسجل ومحجوز مسبقاً في هذا التكوين</span>
@@ -229,6 +233,19 @@ export const CourseModal: React.FC<CourseModalProps> = ({
               <p className="text-xs text-emerald-400/80">
                 يمكنك الاطلاع على حالة حجزك ومستحقاتك في جواز مهاراتك.
               </p>
+              {onOpen3DEvaluation && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    onOpen3DEvaluation(course);
+                  }}
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#06B6D4] hover:opacity-95 text-white text-xs font-bold inline-flex items-center gap-1.5 cursor-pointer shadow-md transition-all"
+                >
+                  <Sliders className="w-3.5 h-3.5 text-cyan-200" />
+                  <span>إجراء التقييم ثلاثي الأبعاد للتكوين (3D Evaluation)</span>
+                </button>
+              )}
             </div>
           )}
 

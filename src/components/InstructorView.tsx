@@ -28,12 +28,19 @@ import {
   Eye,
   EyeOff,
   Star,
-  Flame
+  Flame,
+  QrCode,
+  Layers,
+  Sliders,
+  Laptop,
+  AlertTriangle
 } from 'lucide-react';
 import { Course, Transaction, TrustCertificate, UserAccount } from '../types';
 import { Language, translations } from '../translations';
 import { TrustPassportCard } from './TrustPassportCard';
 import { ALL_SPECIALIZATIONS } from '../data/specializationsData';
+import { AttendanceManagerModal } from './AttendanceManagerModal';
+import { Evaluation3DModal } from './Evaluation3DModal';
 
 interface InstructorViewProps {
   instructorAccount: UserAccount;
@@ -84,16 +91,22 @@ export const InstructorView: React.FC<InstructorViewProps> = ({
   const [expandedCourseId, setExpandedCourseId] = useState<string | null>(courses[0]?.id || null);
   const [showFullEmails, setShowFullEmails] = useState(false);
 
+  // Axis 4 Modals
+  const [attendanceModalCourse, setAttendanceModalCourse] = useState<Course | null>(null);
+  const [evaluation3DModalCourse, setEvaluation3DModalCourse] = useState<Course | null>(null);
+
   // Mock enrolled learners per course for live management
   const [learnersByCourse, setLearnersByCourse] = useState<Record<string, EnrolledLearnerItem[]>>({
     'course-ai-mastery': [
       { id: 'lrn-1', name: 'أحمد التازي', email: 'ahmed.tazi@gmail.com', enrolledDate: '2026-11-01', paymentStatus: 'paid_escrow', attendanceRate: 100, badgeIssued: false },
       { id: 'lrn-2', name: 'سناء بناني', email: 'sanaa.b@yahoo.fr', enrolledDate: '2026-11-03', paymentStatus: 'paid_escrow', attendanceRate: 90, badgeIssued: false },
       { id: 'lrn-3', name: 'عمر القاسمي', email: 'omar.q@outlook.com', enrolledDate: '2026-11-04', paymentStatus: 'installment', attendanceRate: 85, badgeIssued: false },
+      { id: 'lrn-warn', name: 'طارق الحسني', email: 'tariq.h@gmail.com', enrolledDate: '2026-11-05', paymentStatus: 'paid_escrow', attendanceRate: 64, badgeIssued: false },
     ],
     'course-fullstack-cloud': [
       { id: 'lrn-4', name: 'ياسين الفاسي', email: 'yassine.f@gmail.com', enrolledDate: '2026-11-02', paymentStatus: 'paid_escrow', attendanceRate: 95, badgeIssued: false },
       { id: 'lrn-5', name: 'لبنى الشريف', email: 'loubna.c@gmail.com', enrolledDate: '2026-11-04', paymentStatus: 'paid_escrow', attendanceRate: 88, badgeIssued: false },
+      { id: 'lrn-warn2', name: 'مهدي العراقي', email: 'mehdi.i@gmail.com', enrolledDate: '2026-11-06', paymentStatus: 'paid_escrow', attendanceRate: 52, badgeIssued: false },
     ],
   });
 
@@ -101,13 +114,20 @@ export const InstructorView: React.FC<InstructorViewProps> = ({
   const [badgeToast, setBadgeToast] = useState<string | null>(null);
 
   const handleIssueBadge = (courseId: string, learnerId: string, learnerName: string) => {
-    setLearnersByCourse((prev) => {
-      const list = prev[courseId] || [];
-      return {
-        ...prev,
-        [courseId]: list.map((l) => (l.id === learnerId ? { ...l, badgeIssued: true } : l)),
-      };
-    });
+    const list = learnersByCourse[courseId] || [];
+    const learner = list.find((l) => l.id === learnerId);
+    
+    // Safety Lock: Attendance must be >= 80%
+    if (learner && learner.attendanceRate < 80) {
+      setBadgeToast(`⚠️ نظام الحماية التعاقدية: لا يمكن منح الشارة للمتدرب "${learnerName}" لأن نسبة حضوره (${learner.attendanceRate}%) أقل من عتبة الـ 80% الإلزامية!`);
+      setTimeout(() => setBadgeToast(null), 5000);
+      return;
+    }
+
+    setLearnersByCourse((prev) => ({
+      ...prev,
+      [courseId]: list.map((l) => (l.id === learnerId ? { ...l, badgeIssued: true } : l)),
+    }));
     setBadgeToast(`تم إصدار شارة التخرج واعتمادها في جواز مهارات "${learnerName}" بنجاح! 🎓`);
     setTimeout(() => setBadgeToast(null), 4000);
   };
@@ -460,6 +480,94 @@ export const InstructorView: React.FC<InstructorViewProps> = ({
             />
           </section>
 
+          {/* 3D Evaluation Quality Index Section (Axis 4) */}
+          <section className="p-6 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900/90 to-purple-950/40 border border-slate-800 shadow-xl space-y-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div className="space-y-1">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-[#7C3AED]/20 text-purple-300 border border-purple-500/40">
+                  <Layers className="w-3.5 h-3.5 text-[#06B6D4]" />
+                  <span>مؤشر التقييم ثلاثي الأبعاد المعتمد (Certified 3D Evaluation Radar)</span>
+                </div>
+                <h3 className="text-base sm:text-lg font-black text-white">
+                  محصلة تقييمات المتدربين الشفافة والمحمية للمكوّن والمحتوى واللوجستيك
+                </h3>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setEvaluation3DModalCourse(courses[0] || null)}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#06B6D4] hover:opacity-95 text-white text-xs font-bold shadow-md cursor-pointer transition-all"
+              >
+                <Sliders className="w-3.5 h-3.5 text-cyan-200" />
+                <span>معاينة نموذج التقييم ثلاثي الأبعاد 3D</span>
+              </button>
+            </div>
+
+            {/* 3 Pillars of 3D Evaluation */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+              {/* Pillar 1: Trainer Pedagogy */}
+              <div className="p-4 rounded-2xl bg-slate-950/70 border border-purple-800/40 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-xs font-bold text-white">
+                    <GraduationCap className="w-4 h-4 text-[#06B6D4]" />
+                    <span>أداء المكوّن البيداغوجي</span>
+                  </div>
+                  <span className="font-mono font-black text-base text-purple-400">99.2%</span>
+                </div>
+                <div className="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                  <div className="h-full bg-purple-500 rounded-full" style={{ width: '99.2%' }}></div>
+                </div>
+                <p className="text-[11px] text-slate-400">
+                  كفاءة الشرح، التفاعل النشط، والالتزام الصارم بمواعيد الحصص.
+                </p>
+              </div>
+
+              {/* Pillar 2: Content & Syllabus */}
+              <div className="p-4 rounded-2xl bg-slate-950/70 border border-cyan-800/40 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-xs font-bold text-white">
+                    <Laptop className="w-4 h-4 text-cyan-400" />
+                    <span>جودة المحتوى والمنهج</span>
+                  </div>
+                  <span className="font-mono font-black text-base text-cyan-400">98.6%</span>
+                </div>
+                <div className="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                  <div className="h-full bg-cyan-400 rounded-full" style={{ width: '98.6%' }}></div>
+                </div>
+                <p className="text-[11px] text-slate-400">
+                  قيمة الورشات التطبيقية، المنهج الحديث، وملاءمة المشاريع للسوق.
+                </p>
+              </div>
+
+              {/* Pillar 3: Logistics & Tech */}
+              <div className="p-4 rounded-2xl bg-slate-950/70 border border-emerald-800/40 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-xs font-bold text-white">
+                    <Building2 className="w-4 h-4 text-emerald-400" />
+                    <span>الظروف اللوجستية والبث</span>
+                  </div>
+                  <span className="font-mono font-black text-base text-emerald-400">97.4%</span>
+                </div>
+                <div className="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                  <div className="h-full bg-emerald-400 rounded-full" style={{ width: '97.4%' }}></div>
+                </div>
+                <p className="text-[11px] text-slate-400">
+                  تجهيزات القاعة المريحة للحضوري، واستقرار منصة البث لعن بُعد.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-3 rounded-2xl bg-cyan-950/30 border border-cyan-800/40 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-300">
+              <span className="flex items-center gap-1.5 font-bold text-cyan-300">
+                <ShieldCheck className="w-4 h-4 text-cyan-400" />
+                <span>المحصلة الإجمالية الموزونة: 98.4 / 100 (رتبة الجودة الماسية الفائقة Diamond Tier)</span>
+              </span>
+              <span className="text-[11px] text-slate-400">
+                مبني على 124 تقييماً موثقاً بهويات محمية مجهولة
+              </span>
+            </div>
+          </section>
+
           {/* Active Courses List with Trackers */}
           <div className="space-y-4">
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -600,18 +708,33 @@ export const InstructorView: React.FC<InstructorViewProps> = ({
                                   </h5>
                                 </div>
 
-                                {/* Privacy mask toggle button */}
-                                <div className="flex items-center gap-2">
-                                  <span className="text-[10px] text-emerald-400 flex items-center gap-1">
-                                    <ShieldCheck className="w-3 h-3" />
-                                    <span>خصوصية البريد الإلكتروني نشطة</span>
-                                  </span>
+                                {/* Action Buttons: Smart Attendance & Privacy mask */}
+                                <div className="flex items-center gap-2 flex-wrap">
                                   <button
+                                    type="button"
+                                    onClick={() => setAttendanceModalCourse(course)}
+                                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-purple-900 to-cyan-900 hover:from-purple-800 text-white text-[11px] font-bold border border-cyan-500/40 cursor-pointer shadow-md transition-all"
+                                  >
+                                    <QrCode className="w-3.5 h-3.5 text-cyan-300" />
+                                    <span>إدارة الحضور والـ QR الذكي</span>
+                                  </button>
+
+                                  <button
+                                    type="button"
+                                    onClick={() => setEvaluation3DModalCourse(course)}
+                                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-purple-300 hover:text-white text-[11px] font-bold border border-purple-700/40 cursor-pointer"
+                                  >
+                                    <Sliders className="w-3.5 h-3.5 text-[#06B6D4]" />
+                                    <span>التقييم ثلاثي الأبعاد 3D</span>
+                                  </button>
+
+                                  <button
+                                    type="button"
                                     onClick={() => setShowFullEmails(!showFullEmails)}
-                                    className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-bold cursor-pointer"
+                                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-bold cursor-pointer"
                                   >
                                     {showFullEmails ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
-                                    <span>{showFullEmails ? 'إخفاء البريد' : 'إظهار البريد كاملاً'}</span>
+                                    <span>{showFullEmails ? 'إخفاء البريد' : 'إظهار البريد'}</span>
                                   </button>
                                 </div>
                               </div>
@@ -623,7 +746,7 @@ export const InstructorView: React.FC<InstructorViewProps> = ({
                                       <th className="p-2.5">المتدرب</th>
                                       <th className="p-2.5">تاريخ التسجيل</th>
                                       <th className="p-2.5">حالة الرسوم (Escrow)</th>
-                                      <th className="p-2.5">نسبة الحضور والتفاعل</th>
+                                      <th className="p-2.5">نسبة الحضور التراكمية</th>
                                       <th className="p-2.5 text-center">إصدار الشارة لجواز المهارات</th>
                                     </tr>
                                   </thead>
@@ -642,8 +765,19 @@ export const InstructorView: React.FC<InstructorViewProps> = ({
                                             مؤمّنة في الضمان ✓
                                           </span>
                                         </td>
-                                        <td className="p-2.5 font-mono text-cyan-300 font-bold">
-                                          {learner.attendanceRate}%
+                                        <td className="p-2.5">
+                                          <div className="flex items-center gap-2">
+                                            <span className={`font-mono font-bold text-xs ${
+                                              learner.attendanceRate >= 80 ? 'text-cyan-300' : 'text-rose-400'
+                                            }`}>
+                                              {learner.attendanceRate}%
+                                            </span>
+                                            {learner.attendanceRate < 80 && (
+                                              <span className="text-[10px] text-rose-400 font-bold bg-rose-950/60 px-1.5 py-0.5 rounded border border-rose-800">
+                                                دون عتبة 80% ⚠
+                                              </span>
+                                            )}
+                                          </div>
                                         </td>
                                         <td className="p-2.5 text-center">
                                           {learner.badgeIssued ? (
@@ -651,13 +785,22 @@ export const InstructorView: React.FC<InstructorViewProps> = ({
                                               <BadgeCheck className="w-3.5 h-3.5" />
                                               <span>تم الإصدار بالجواز</span>
                                             </span>
-                                          ) : (
+                                          ) : learner.attendanceRate >= 80 ? (
                                             <button
                                               onClick={() => handleIssueBadge(course.id, learner.id, learner.name)}
                                               className="inline-flex items-center gap-1 text-[11px] font-bold text-white bg-gradient-to-r from-[#7C3AED] to-[#06B6D4] px-3 py-1 rounded-lg hover:shadow-md cursor-pointer"
                                             >
-                                              <Sparkles className="w-3 h-3" />
+                                              <Sparkles className="w-3 h-3 text-amber-300" />
                                               <span>منح الشارة</span>
+                                            </button>
+                                          ) : (
+                                            <button
+                                              disabled
+                                              title="محظور بقفل الأمان: نسبة الحضور دون 80% (مخالفة لميثاق التدريب والعقد الإلكتروني)"
+                                              className="inline-flex items-center gap-1 text-[10px] font-bold text-slate-500 bg-slate-900 border border-slate-800 px-2.5 py-1 rounded-lg cursor-not-allowed opacity-75"
+                                            >
+                                              <Lock className="w-3 h-3 text-rose-400" />
+                                              <span>محظور (&lt; 80%)</span>
                                             </button>
                                           )}
                                         </td>
@@ -703,6 +846,94 @@ export const InstructorView: React.FC<InstructorViewProps> = ({
               onOpenCertificateModal={(cert) => onOpenCertificateModal?.(cert)}
               currentLang={currentLang}
             />
+          </section>
+
+          {/* 3D Evaluation Quality Index Section (Axis 4) */}
+          <section className="p-6 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900/90 to-purple-950/40 border border-slate-800 shadow-xl space-y-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div className="space-y-1">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-[#7C3AED]/20 text-purple-300 border border-purple-500/40">
+                  <Layers className="w-3.5 h-3.5 text-[#06B6D4]" />
+                  <span>مؤشر التقييم ثلاثي الأبعاد المعتمد (Certified 3D Evaluation Radar)</span>
+                </div>
+                <h3 className="text-base sm:text-lg font-black text-white">
+                  محصلة تقييمات المتدربين الشفافة والمحمية للمكوّن والمحتوى واللوجستيك
+                </h3>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setEvaluation3DModalCourse(courses[0] || null)}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#06B6D4] hover:opacity-95 text-white text-xs font-bold shadow-md cursor-pointer transition-all"
+              >
+                <Sliders className="w-3.5 h-3.5 text-cyan-200" />
+                <span>معاينة نموذج التقييم ثلاثي الأبعاد 3D</span>
+              </button>
+            </div>
+
+            {/* 3 Pillars of 3D Evaluation */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+              {/* Pillar 1: Trainer Pedagogy */}
+              <div className="p-4 rounded-2xl bg-slate-950/70 border border-purple-800/40 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-xs font-bold text-white">
+                    <GraduationCap className="w-4 h-4 text-[#06B6D4]" />
+                    <span>أداء المكوّن البيداغوجي</span>
+                  </div>
+                  <span className="font-mono font-black text-base text-purple-400">99.2%</span>
+                </div>
+                <div className="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                  <div className="h-full bg-purple-500 rounded-full" style={{ width: '99.2%' }}></div>
+                </div>
+                <p className="text-[11px] text-slate-400">
+                  كفاءة الشرح، التفاعل النشط، والالتزام الصارم بمواعيد الحصص.
+                </p>
+              </div>
+
+              {/* Pillar 2: Content & Syllabus */}
+              <div className="p-4 rounded-2xl bg-slate-950/70 border border-cyan-800/40 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-xs font-bold text-white">
+                    <Laptop className="w-4 h-4 text-cyan-400" />
+                    <span>جودة المحتوى والمنهج</span>
+                  </div>
+                  <span className="font-mono font-black text-base text-cyan-400">98.6%</span>
+                </div>
+                <div className="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                  <div className="h-full bg-cyan-400 rounded-full" style={{ width: '98.6%' }}></div>
+                </div>
+                <p className="text-[11px] text-slate-400">
+                  قيمة الورشات التطبيقية، المنهج الحديث، وملاءمة المشاريع للسوق.
+                </p>
+              </div>
+
+              {/* Pillar 3: Logistics & Tech */}
+              <div className="p-4 rounded-2xl bg-slate-950/70 border border-emerald-800/40 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-xs font-bold text-white">
+                    <Building2 className="w-4 h-4 text-emerald-400" />
+                    <span>الظروف اللوجستية والبث</span>
+                  </div>
+                  <span className="font-mono font-black text-base text-emerald-400">97.4%</span>
+                </div>
+                <div className="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                  <div className="h-full bg-emerald-400 rounded-full" style={{ width: '97.4%' }}></div>
+                </div>
+                <p className="text-[11px] text-slate-400">
+                  تجهيزات القاعة المريحة للحضوري، واستقرار منصة البث لعن بُعد.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-3 rounded-2xl bg-cyan-950/30 border border-cyan-800/40 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-300">
+              <span className="flex items-center gap-1.5 font-bold text-cyan-300">
+                <ShieldCheck className="w-4 h-4 text-cyan-400" />
+                <span>المحصلة الإجمالية الموزونة: 98.4 / 100 (رتبة الجودة الماسية الفائقة Diamond Tier)</span>
+              </span>
+              <span className="text-[11px] text-slate-400">
+                مبني على 124 تقييماً موثقاً بهويات محمية مجهولة
+              </span>
+            </div>
           </section>
         </div>
       )}
@@ -981,6 +1212,32 @@ export const InstructorView: React.FC<InstructorViewProps> = ({
             )}
           </div>
         </div>
+      )}
+
+      {/* Axis 4 Modals */}
+      {attendanceModalCourse && (
+        <AttendanceManagerModal
+          isOpen={!!attendanceModalCourse}
+          onClose={() => setAttendanceModalCourse(null)}
+          course={attendanceModalCourse}
+          currentLang={currentLang}
+          onIssueBadgeToLearner={(learnerId, learnerName) => {
+            handleIssueBadge(attendanceModalCourse.id, learnerId, learnerName);
+          }}
+        />
+      )}
+
+      {evaluation3DModalCourse && (
+        <Evaluation3DModal
+          isOpen={!!evaluation3DModalCourse}
+          onClose={() => setEvaluation3DModalCourse(null)}
+          course={evaluation3DModalCourse}
+          currentLang={currentLang}
+          onEvaluationSubmitted={(submission) => {
+            setBadgeToast(`تم تسجيل تقييمك بنجاح! بمؤشر جودة إجمالي: ${submission.overall3DScore}% 🌟`);
+            setTimeout(() => setBadgeToast(null), 5000);
+          }}
+        />
       )}
 
     </div>
