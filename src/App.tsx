@@ -69,15 +69,19 @@ export default function App() {
   const t = translations[currentLang];
 
   // 1. Role Swapper State (Student, Instructor, Admin)
-  const [activeViewRole, setActiveViewRole] = useState<ActiveViewRole>(() => {
-    const saved = localStorage.getItem('beinskills_view_role');
-    return (saved as ActiveViewRole) || 'student';
-  });
+  const [activeViewRole, setActiveViewRole] = useState<ActiveViewRole>('student');
 
-  // 2. Logged-in Instructor ID (null = unauthenticated guest in instructor portal)
-  const [currentInstructorId, setCurrentInstructorId] = useState<string | null>(() => {
-    return localStorage.getItem('beinskills_current_instructor_id') || null;
-  });
+  // 2. Instructor Portal Sub-mode:
+  // - 'directory': The General Public Board of ALL Instructors & Institutions
+  // - 'public_profile': Public profile of a specific instructor/institute
+  // - 'private_dashboard': Private dashboard for the authenticated instructor
+  const [instructorPortalMode, setInstructorPortalMode] = useState<'directory' | 'public_profile' | 'private_dashboard'>('directory');
+
+  // 3. Selected Instructor for Public Viewing
+  const [selectedPublicInstructor, setSelectedPublicInstructor] = useState<UserAccount | null>(null);
+
+  // 4. Logged-in Instructor ID for Private Dashboard (defaults to null so it never auto-logs in!)
+  const [currentInstructorId, setCurrentInstructorId] = useState<string | null>(null);
 
   // 3. Courses State
   const [courses, setCourses] = useState<Course[]>(() => {
@@ -197,6 +201,18 @@ export default function App() {
       return cInstructor.includes(instName) || instName.includes(cInstructor);
     });
   }, [courses, currentInstructor]);
+
+  // Scoped Courses for Currently Selected Public Instructor/Institute
+  const selectedPublicInstructorCourses = useMemo(() => {
+    if (!selectedPublicInstructor) return [];
+    const instName = selectedPublicInstructor.name.trim().toLowerCase();
+    const matched = courses.filter((c) => {
+      const cInstructor = c.instructor.name.trim().toLowerCase();
+      return cInstructor.includes(instName) || instName.includes(cInstructor);
+    });
+    if (matched.length > 0) return matched;
+    return courses.slice(0, 2);
+  }, [courses, selectedPublicInstructor]);
 
   // Scoped Transactions for Currently Logged-in Instructor ONLY
   const currentInstructorTransactions = useMemo(() => {
@@ -544,7 +560,14 @@ export default function App() {
         onOpenInstructorsDirectory={() => setIsInstructorsDirectoryOpen(true)}
         onOpenRegistration={openRegistrationWithRole}
         activeViewRole={activeViewRole}
-        onChangeViewRole={(role) => setActiveViewRole(role)}
+        onChangeViewRole={(role) => {
+          setActiveViewRole(role);
+          if (role === 'instructor') {
+            setInstructorPortalMode('directory');
+            setSelectedPublicInstructor(null);
+          }
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
         currentInstructor={currentInstructor}
         currentLang={currentLang}
         onLanguageChange={setCurrentLang}
@@ -552,15 +575,25 @@ export default function App() {
 
       <main className="flex-1">
         
-        {/* VIEW 1: INSTRUCTOR VIEW (Protected & Authenticated: Public Landing if not logged in, Scoped View if logged in) */}
+        {/* VIEW 1: INSTRUCTORS & INSTITUTES PORTAL */}
         {activeViewRole === 'instructor' && (
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-            {!currentInstructor ? (
+            
+            {/* SUB-VIEW 1: GENERAL BOARD OF ALL INSTRUCTORS & INSTITUTES */}
+            {instructorPortalMode === 'directory' && (
               <InstructorAuthLanding
                 instructorAccounts={instructorAccounts}
-                onSelectInstructor={(account) => {
+                courses={courses}
+                onSelectInstructorForPublicView={(account) => {
+                  setSelectedPublicInstructor(account);
+                  setInstructorPortalMode('public_profile');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                onSelectInstructorForPrivateLogin={(account) => {
                   setCurrentInstructorId(account.id);
+                  setInstructorPortalMode('private_dashboard');
                   showToast(`مرحباً بك د./أ. ${account.name}! تم تسجيل الدخول إلى فضاء عملك الخاص بنجاح.`);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
                 onOpenRegistration={openRegistrationWithRole}
                 onBackToLearner={() => {
@@ -569,14 +602,45 @@ export default function App() {
                 }}
                 currentLang={currentLang}
               />
-            ) : (
+            )}
+
+            {/* SUB-VIEW 2: PUBLIC PROFILE OF SELECTED INSTRUCTOR/INSTITUTE */}
+            {instructorPortalMode === 'public_profile' && selectedPublicInstructor && (
               <InstructorView
+                isPublicView={true}
+                instructorAccount={selectedPublicInstructor}
+                courses={selectedPublicInstructorCourses}
+                transactions={[]}
+                onOpenCreateCourse={() => setIsAdminOpen(true)}
+                onRequestPayout={() => {}}
+                onOpenCertificateModal={handleOpenTrustCertificate}
+                onBackToLearner={() => {
+                  setActiveViewRole('student');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                onBackToDirectory={() => {
+                  setInstructorPortalMode('directory');
+                  setSelectedPublicInstructor(null);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                onLoginAsThisInstructor={() => {
+                  setCurrentInstructorId(selectedPublicInstructor.id);
+                  setInstructorPortalMode('private_dashboard');
+                  showToast(`تم فتح لوحة تحكم وإدارة الحساب لـ ${selectedPublicInstructor.name}.`);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                currentLang={currentLang}
+              />
+            )}
+
+            {/* SUB-VIEW 3: PRIVATE MANAGEMENT DASHBOARD (AUTHENTICATED) */}
+            {instructorPortalMode === 'private_dashboard' && currentInstructor && (
+              <InstructorView
+                isPublicView={false}
                 instructorAccount={currentInstructor}
                 courses={currentInstructorCourses}
                 transactions={currentInstructorTransactions}
-                onOpenCreateCourse={() => {
-                  setIsAdminOpen(true);
-                }}
+                onOpenCreateCourse={() => setIsAdminOpen(true)}
                 onCourseCreated={handleAddCourse}
                 onRequestPayout={(courseTitle, amount) => {
                   showToast(currentLang === 'ar' ? `تم إرسال طلب تحرير مستحقات الضمان الوسيط بمبلغ ${amount} درهم إلى الإدارة.` : `Escrow payout request of ${amount} ${t.currency} sent to administration.`);
@@ -588,6 +652,8 @@ export default function App() {
                 }}
                 onSwitchAccount={() => {
                   setCurrentInstructorId(null);
+                  setInstructorPortalMode('directory');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
                 onLogoutInstructor={() => {
                   setCurrentInstructorId(null);
@@ -597,6 +663,7 @@ export default function App() {
                 currentLang={currentLang}
               />
             )}
+
           </div>
         )}
 
@@ -653,6 +720,8 @@ export default function App() {
                 <div
                   onClick={() => {
                     setActiveViewRole('instructor');
+                    setInstructorPortalMode('directory');
+                    setSelectedPublicInstructor(null);
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
                   className="glass-card p-5 rounded-2xl border border-purple-500/30 hover:border-purple-400 bg-slate-900/60 hover:bg-slate-800/80 transition-all cursor-pointer flex items-center justify-between gap-4 group"
@@ -876,6 +945,8 @@ export default function App() {
               <span className="hover:text-white cursor-pointer" onClick={scrollToPassport}>{t.nav_passport}</span>
               <span className="hover:text-white cursor-pointer" onClick={() => {
                 setActiveViewRole('instructor');
+                setInstructorPortalMode('directory');
+                setSelectedPublicInstructor(null);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}>بوابة المكوّنين</span>
               <span className="hover:text-white cursor-pointer" onClick={() => openRegistrationWithRole('institute')}>{t.reg_institute}</span>
