@@ -298,8 +298,8 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     payerEmail: 'yassine.student@beinskills.ma',
     amount: 1850,
     currency: 'درهم',
-    platformFee: 222, // 12%
-    instructorPayout: 1628,
+    platformFee: 370, // 20%
+    instructorPayout: 1480, // 80%
     seatsCount: 1,
     paymentType: 'escrow-full',
     escrowStatus: 'held_in_escrow',
@@ -314,8 +314,8 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     payerEmail: 'billing@smartsystems.ma',
     amount: 10200, // 5 seats with 15% discount
     currency: 'درهم',
-    platformFee: 1224, // 12%
-    instructorPayout: 8976,
+    platformFee: 2040, // 20%
+    instructorPayout: 8160, // 80%
     seatsCount: 5,
     paymentType: 'b2b-group',
     escrowStatus: 'held_in_escrow',
@@ -330,8 +330,8 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     payerEmail: 'hamza.dev@gmail.com',
     amount: 2900,
     currency: 'درهم',
-    platformFee: 348,
-    instructorPayout: 2552,
+    platformFee: 580, // 20%
+    instructorPayout: 2320, // 80%
     seatsCount: 1,
     paymentType: 'installments',
     escrowStatus: 'released', // payout released to instructor
@@ -346,8 +346,8 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     payerEmail: 'meriem.ui@outlook.com',
     amount: 1500,
     currency: 'درهم',
-    platformFee: 180,
-    instructorPayout: 1320,
+    platformFee: 300, // 20%
+    instructorPayout: 1200, // 80%
     seatsCount: 1,
     paymentType: 'wallet',
     escrowStatus: 'released',
@@ -362,7 +362,8 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     payerEmail: 'soufiane.pm@tech.ma',
     amount: 1650,
     currency: 'درهم',
-    platformFee: 198,
+    platformFee: 330, // 20%
+    instructorPayout: 1320, // 80%
     instructorPayout: 1452,
     seatsCount: 1,
     paymentType: 'escrow-full',
