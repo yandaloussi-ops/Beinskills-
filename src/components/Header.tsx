@@ -80,8 +80,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Logo & Brand Identity (Clicking returns to Home) */}
           <BrandLogo
             size="md"
-            showBadge={true}
-            badgeText={t.brand_sub}
+            showBadge={false}
             showSlogan={true}
             sloganText={t.slogan}
             onClick={handleGoHome}
