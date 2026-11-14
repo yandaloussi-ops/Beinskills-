@@ -146,3 +146,63 @@ export interface ChatMessage {
 }
 
 export type GeminiModelType = 'gemini-3.1-flash-lite' | 'gemini-3.8-flash' | 'gemini-4-argon';
+
+// ==========================================
+// AXIS 4: ATTENDANCE & 3D EVALUATION TYPES
+// ==========================================
+
+export interface CourseSession {
+  id: string;
+  courseId: string;
+  sessionNumber: number;
+  title: string;
+  date: string;
+  time: string;
+  durationMinutes: number;
+  mode: CourseMode;
+  locationOrLink: string;
+  qrSecurityToken?: string;
+  sessionPin?: string;
+  completed: boolean;
+}
+
+export interface LearnerAttendanceRecord {
+  learnerId: string;
+  learnerName: string;
+  learnerEmail: string;
+  attendedSessionsCount: number;
+  totalSessionsCount: number;
+  attendanceRate: number; // percentage e.g. 85
+  watchtimeMinutes?: number;
+  verifiedByQr: boolean;
+  badgeEligible: boolean; // attendanceRate >= 80
+  badgeIssued: boolean;
+}
+
+export interface Evaluation3DSubmission {
+  id: string;
+  courseId: string;
+  courseTitle: string;
+  instructorName: string;
+  learnerName: string;
+  isAnonymous: boolean;
+  submittedAt: string;
+  // Dimension 1: Trainer Pedagogy (1-5)
+  trainerPedagogyScore: number;
+  trainerInteractivityScore: number;
+  trainerPunctualityScore: number;
+  trainerSubtotal: number; // %
+  // Dimension 2: Content Quality (1-5)
+  contentPracticalScore: number;
+  contentModernityScore: number;
+  contentClarityScore: number;
+  contentSubtotal: number; // %
+  // Dimension 3: Logistics & Tech (1-5)
+  logisticsEquipmentScore: number;
+  logisticsPlatformScore: number;
+  logisticsSubtotal: number; // %
+  // Overall Weighted Score (0-100%)
+  overall3DScore: number;
+  writtenFeedback: string;
+}
+

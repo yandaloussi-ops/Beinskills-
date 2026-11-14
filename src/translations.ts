@@ -162,6 +162,10 @@ export const translations = {
     admin_mode_banner_title: 'أنت الآن في وضع إدارة المنصة (Admin Mode)',
     admin_mode_banner_sub: 'لديك كامل الصلاحيات لإدارة التكوينات، تحرير دفعات الضمان الوسيط (Escrow)، وتوثيق أو حظر المستخدمين.',
     admin_mode_banner_btn: 'فتح لوحة التحكم الإدارية والمالية الشاملة',
+    eval3d_title: 'التقييم ثلاثي الأبعاد المعتمد (3D Evaluation)',
+    eval3d_radar: 'مؤشر الجودة الثلاثي الموزون (المكوّن 40% • المحتوى 40% • اللوجستيك 20%)',
+    attendance_threshold: 'عتبة 80% الإلزامية لنيل الشارة الرسمية بجواز المهارات',
+    attendance_qr_pin: 'نظام إدارة الحضور الذكي بالـ QR والـ PIN للقاعة وبث الجلسات',
   },
 
   en: {
@@ -311,6 +315,10 @@ export const translations = {
     admin_mode_banner_title: 'You are currently in Admin Mode',
     admin_mode_banner_sub: 'Full access to manage courses, release escrow payouts, and verify or block users.',
     admin_mode_banner_btn: 'Open Full Admin & Escrow Dashboard',
+    eval3d_title: 'Certified 3D Evaluation',
+    eval3d_radar: '3D Weighted Quality Index (Instructor 40% • Content 40% • Logistics 20%)',
+    attendance_threshold: 'Mandatory 80% Minimum Attendance for Official Skills Badge Unlock',
+    attendance_qr_pin: 'Smart Attendance Engine: Classroom Dynamic QR, PIN & Virtual Watchtime',
   },
 
   fr: {
@@ -460,6 +468,10 @@ export const translations = {
     admin_mode_banner_title: 'Vous êtes actuellement en Mode Administrateur',
     admin_mode_banner_sub: 'Accès complet pour gérer les cours, débloquer les paiements sous séquestre et vérifier ou bloquer les comptes.',
     admin_mode_banner_btn: 'Ouvrir le tableau de bord Admin complet',
+    eval3d_title: 'Évaluation Tridimensionnelle Certifiée (3D Evaluation)',
+    eval3d_radar: 'Indice Qualité Global Pondéré (Formateur 40% • Contenu 40% • Logistique 20%)',
+    attendance_threshold: 'Seuil d’assiduité minimal de 80% requis pour le badge certifié',
+    attendance_qr_pin: 'Gestion intelligente d’émargement : QR Code dynamique, code PIN et temps de diffusion',
   },
 
   es: {
@@ -609,5 +621,9 @@ export const translations = {
     admin_mode_banner_title: 'Te encuentras en Modo Administrador',
     admin_mode_banner_sub: 'Acceso total para gestionar cursos, liberar pagos en custodia y verificar o suspender cuentas de usuario.',
     admin_mode_banner_btn: 'Abrir panel completo de administración y custodia',
+    eval3d_title: 'Evaluación Tridimensional Certificada (3D Evaluation)',
+    eval3d_radar: 'Índice de Calidad 3D Ponderado (Formador 40% • Temario 40% • Logística 20%)',
+    attendance_threshold: 'Asistencia obligatoria del 80% como mínimo para desbloquear la insignia',
+    attendance_qr_pin: 'Sistema inteligente de asistencia con código QR dinámico, PIN de aula y control de retransmisión',
   },
 };

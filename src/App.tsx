@@ -39,6 +39,7 @@ import { AllSpecializationsModal } from './components/AllSpecializationsModal';
 import { InstructorsDirectoryModal } from './components/InstructorsDirectoryModal';
 import { AdminDashboardModal } from './components/AdminDashboardModal';
 import { TrustCertificateModal } from './components/TrustCertificateModal';
+import { Evaluation3DModal } from './components/Evaluation3DModal';
 import { Language, translations } from './translations';
 import { 
   Filter, 
@@ -136,6 +137,10 @@ export default function App() {
   const [isInstructorsDirectoryOpen, setIsInstructorsDirectoryOpen] = useState(false);
   const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
   const [registrationRole, setRegistrationRole] = useState<RegistrationRole>('learner');
+
+  // Axis 4: 3D Evaluation State for Students
+  const [evaluation3DCourse, setEvaluation3DCourse] = useState<Course | null>(null);
+  const [isEvaluation3DOpen, setIsEvaluation3DOpen] = useState(false);
 
   // References for smooth scrolling
   const coursesSectionRef = useRef<HTMLDivElement>(null);
@@ -991,6 +996,10 @@ export default function App() {
           setIsCourseModalOpen(false);
           handleEnrollCourse(course);
         }}
+        onOpen3DEvaluation={(course) => {
+          setEvaluation3DCourse(course);
+          setIsEvaluation3DOpen(true);
+        }}
         isAlreadyEnrolled={
           selectedCourse
             ? userProfile.enrolledCourseIds.includes(selectedCourse.id)
@@ -1072,6 +1081,7 @@ export default function App() {
         onLearnerRegistered={handleLearnerRegistered}
         onInstituteRegistered={handleInstituteRegistered}
         onTrainerRegistered={handleTrainerRegistered}
+        currentLang={currentLang}
       />
 
       {/* 10. Public Instructors & Institutes Directory Modal (Safe, Public, Zero Financial Exposure) */}
@@ -1160,6 +1170,19 @@ export default function App() {
             </form>
           </div>
         </div>
+      )}
+
+      {/* 12. 3-Dimensional Quality Evaluation Modal (Axis 4) */}
+      {evaluation3DCourse && (
+        <Evaluation3DModal
+          isOpen={isEvaluation3DOpen}
+          onClose={() => {
+            setIsEvaluation3DOpen(false);
+            setEvaluation3DCourse(null);
+          }}
+          course={evaluation3DCourse}
+          currentLang={currentLang}
+        />
       )}
 
     </div>
