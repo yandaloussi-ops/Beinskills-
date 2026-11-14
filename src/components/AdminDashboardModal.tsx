@@ -25,7 +25,11 @@ import {
   Sparkles,
   ArrowUpRight,
   RefreshCw,
-  Star
+  Star,
+  Scale,
+  FileText,
+  AlertTriangle,
+  Gavel
 } from 'lucide-react';
 import { 
   Course, 
@@ -35,7 +39,8 @@ import {
   UserAccountStatus,
   CourseApprovalStatus,
   TrustCertificateTier,
-  TrustCertificate
+  TrustCertificate,
+  EscrowDispute
 } from '../types';
 import { getOrCreateTrustCertificate, SAMPLE_TRUST_CERTIFICATES, TRUST_TIERS_CONFIG } from '../data/trustCertificatesData';
 import { Language, translations } from '../translations';
@@ -79,13 +84,68 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
   onOpenCertificateModal,
   currentLang = 'ar',
 }) => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'courses' | 'users' | 'finance'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'courses' | 'users' | 'finance' | 'disputes'>('overview');
   const [showAddCourseForm, setShowAddCourseForm] = useState(false);
   const [courseSearch, setCourseSearch] = useState('');
   const [userSearch, setUserSearch] = useState('');
   const [userRoleFilter, setUserRoleFilter] = useState<string>('all');
   const [txSearch, setTxSearch] = useState('');
   const [actionNotice, setActionNotice] = useState<string | null>(null);
+
+  // Escrow Tranches Release State per Transaction (Tranche 1: 25%, Tranche 2: 35%, Tranche 3: 40%)
+  const [releasedTranchesByTx, setReleasedTranchesByTx] = useState<Record<string, number[]>>({
+    'TRX-9479': [1, 2, 3], // already released
+    'TRX-9478': [1, 2, 3],
+    'TRX-9481': [1], // Tranche 1 (25%) released, Tranches 2 and 3 pending
+  });
+
+  // Mock Escrow Disputes for Arbitration Desk
+  const [disputes, setDisputes] = useState<EscrowDispute[]>([
+    {
+      id: 'DSP-2026-01',
+      courseId: 'course-ai-mastery',
+      courseTitle: 'المعسكر المكثف في الذكاء الاصطناعي التوليدي',
+      learnerName: 'سفيان برادة',
+      learnerEmail: 'soufiane.b@tech.ma',
+      instructorName: 'د. يونس التازي',
+      amount: 1850,
+      claimedAt: '2026-11-13',
+      reasonCategory: 'pre_course_cancellation',
+      description: 'طلب إلغاء الحجز قبل 72 ساعة من موعد الحصة الأولى لظروف قاهرة، وفق المادة 2 من ميثاق المتدرب.',
+      learnerAttendanceRate: 0,
+      status: 'under_review',
+    },
+    {
+      id: 'DSP-2026-02',
+      courseId: 'course-fullstack-cloud',
+      courseTitle: 'تطوير تطبيقات الويب الحديثة Full-Stack والأنظمة السحابية',
+      learnerName: 'مريم الصقلي',
+      learnerEmail: 'meriem.s@outlook.com',
+      instructorName: 'المهندس كريم المنصوري',
+      amount: 2040,
+      claimedAt: '2026-11-14',
+      reasonCategory: 'hours_reduction',
+      description: 'المكوّن قام بتقليص مدة الحصة الثانية دون تعويض الورشة العملية المقررة.',
+      learnerAttendanceRate: 50,
+      status: 'under_review',
+    },
+    {
+      id: 'DSP-2026-03',
+      courseId: 'course-cyber-defense',
+      courseTitle: 'الأمن السيبراني والدفاع الرقمي واختبار الاختراق الأخلاقي',
+      learnerName: 'كمال الشامي',
+      learnerEmail: 'kamal.s@yahoo.fr',
+      instructorName: 'م. طارق الفاسي',
+      amount: 2900,
+      claimedAt: '2026-11-12',
+      reasonCategory: 'syllabus_breach',
+      description: 'طلب استرجاع بعد حضور 10% فقط مدعياً عدم مطابقة المنهج.',
+      learnerAttendanceRate: 10,
+      status: 'rejected_funds_released',
+      arbitrationVerdict: 'تم فحص المنهج والورشات وتبين مطابقتها الكاملة للسيلابوس المعتمد. تم رفض طلب الاسترداد وصرف المستحقات للمدرب.',
+      resolvedAt: '2026-11-14',
+    },
+  ]);
 
   // Add Course Form State
   const [newTitle, setNewTitle] = useState('');
@@ -172,7 +232,53 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
 
   const handleReleasePayout = (txId: string, instructorName: string, amount: number) => {
     onReleaseEscrowPayout(txId);
-    showNotification(`تم تحرير دفعة الضمان الوسيط (Escrow) بمبلغ ${amount} درهم للمكوّن ${instructorName} بنجاح!`);
+    setReleasedTranchesByTx((prev) => ({ ...prev, [txId]: [1, 2, 3] }));
+    showNotification(`تم تحرير كامل دفعات الضمان الوسيط (Escrow) بمبلغ ${amount} درهم للمكوّن ${instructorName} بنجاح!`);
+  };
+
+  const handleReleaseTranche = (txId: string, trancheNum: number, tranchePercent: number, instructorName: string, totalNet: number) => {
+    const trancheAmount = Math.round(totalNet * tranchePercent);
+    setReleasedTranchesByTx((prev) => {
+      const current = prev[txId] || [];
+      if (current.includes(trancheNum)) return prev;
+      const updated = [...current, trancheNum];
+      if (updated.length >= 3) {
+        onReleaseEscrowPayout(txId);
+      }
+      return { ...prev, [txId]: updated };
+    });
+    showNotification(`تم تحرير الدفعة #${trancheNum} (${Math.round(tranchePercent * 100)}%) بمبلغ ${trancheAmount} درهم إلى حساب ${instructorName}! 💳`);
+  };
+
+  const handleResolveDispute = (disputeId: string, decision: 'approved_full' | 'approved_partial' | 'rejected') => {
+    setDisputes((prev) =>
+      prev.map((d) => {
+        if (d.id !== disputeId) return d;
+        if (decision === 'approved_full') {
+          return {
+            ...d,
+            status: 'approved_full_refund',
+            arbitrationVerdict: 'تم قبول طلب الاسترجاع الكامل بنسبة 100% وإعادة الرسوم إلى وسيلة الدفع الأصلية للمتدرب.',
+            resolvedAt: new Date().toISOString().split('T')[0],
+          };
+        } else if (decision === 'approved_partial') {
+          return {
+            ...d,
+            status: 'approved_partial_refund',
+            arbitrationVerdict: `تم إقرار استرجاع نسبي بمبلغ ${Math.round(d.amount * 0.5)} درهم (50%) وصرف الباقي للمدرب وفق تقرير التحكيم.`,
+            resolvedAt: new Date().toISOString().split('T')[0],
+          };
+        } else {
+          return {
+            ...d,
+            status: 'rejected_funds_released',
+            arbitrationVerdict: 'تم رفض طلب الاسترداد لعدم وجاهته، وتأكيد تحرير المبالغ لحساب المكوّن في Escrow.',
+            resolvedAt: new Date().toISOString().split('T')[0],
+          };
+        }
+      })
+    );
+    showNotification(`تم إصدار قرار التحكيم النهائي في النزاع #${disputeId} وتحديث قيود الضمان! ⚖️`);
   };
 
   const handleUserStatusChange = (userId: string, newStatus: UserAccountStatus, userName: string) => {
@@ -295,6 +401,18 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
           >
             <Users className="w-3.5 h-3.5" />
             <span>المستخدمون والمؤسسات ({userAccounts.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('disputes')}
+            className={`px-3.5 py-2 rounded-xl font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+              activeTab === 'disputes'
+                ? 'bg-rose-600 text-white shadow-md font-bold'
+                : 'text-slate-400 hover:text-white bg-slate-900'
+            }`}
+          >
+            <Scale className="w-3.5 h-3.5 text-rose-300" />
+            <span>مكتب تحكيم النزاعات والاسترجاع ({disputes.length})</span>
           </button>
         </div>
 
@@ -564,20 +682,171 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
                         </td>
                         <td className="p-3 text-center">
                           {tx.escrowStatus === 'held_in_escrow' ? (
-                            <button
-                              onClick={() => handleReleasePayout(tx.id, tx.instructorName, tx.instructorPayout)}
-                              className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 text-white font-bold text-xs shadow-md cursor-pointer transition-all active:scale-95"
-                            >
-                              تحرير الدفعة الآن
-                            </button>
+                            <div className="flex flex-col gap-1 items-center min-w-[130px]">
+                              <div className="flex items-center gap-1">
+                                {[
+                                  { num: 1, pct: 0.25, label: 'د1 (25%)' },
+                                  { num: 2, pct: 0.35, label: 'د2 (35%)' },
+                                  { num: 3, pct: 0.40, label: 'د3 (40%)' },
+                                ].map((tr) => {
+                                  const isReleased = (releasedTranchesByTx[tx.id] || []).includes(tr.num);
+                                  return (
+                                    <button
+                                      key={tr.num}
+                                      disabled={isReleased}
+                                      onClick={() => handleReleaseTranche(tx.id, tr.num, tr.pct, tx.instructorName, tx.instructorPayout)}
+                                      className={`px-1.5 py-1 rounded text-[10px] font-bold transition-all ${
+                                        isReleased
+                                          ? 'bg-emerald-950 text-emerald-300 border border-emerald-700 cursor-default'
+                                          : 'bg-slate-800 text-cyan-300 hover:bg-cyan-900 border border-slate-700 cursor-pointer'
+                                      }`}
+                                      title={isReleased ? `تم صرف الدفعة #${tr.num}` : `تحرير الدفعة #${tr.num} (${Math.round(tr.pct*100)}% = ${Math.round(tx.instructorPayout*tr.pct)} درهم)`}
+                                    >
+                                      {isReleased ? `✓ د${tr.num}` : tr.label}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                              <button
+                                onClick={() => handleReleasePayout(tx.id, tx.instructorName, tx.instructorPayout)}
+                                className="w-full text-[10px] py-1 rounded-lg bg-emerald-700/80 hover:bg-emerald-600 text-white font-bold cursor-pointer transition-all"
+                              >
+                                تحرير الكل (80%)
+                              </button>
+                            </div>
                           ) : (
-                            <span className="text-xs text-slate-500 font-medium">تم تحرير الدفعة</span>
+                            <span className="text-xs text-emerald-400 font-bold flex items-center justify-center gap-1">
+                              <CheckCircle2 className="w-3.5 h-3.5" />
+                              <span>مكتملة الصرف</span>
+                            </span>
                           )}
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
+              </div>
+            </div>
+          )}
+
+          {/* TAB: DISPUTES & ARBITRATION DESK */}
+          {activeTab === 'disputes' && (
+            <div className="space-y-4 animate-in fade-in">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 rounded-2xl bg-rose-950/20 border border-rose-800/40">
+                <div>
+                  <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                    <Scale className="w-4 h-4 text-rose-400" />
+                    <span>مكتب التحكيم وفض النزاعات وطلبات الاسترجاع (Arbitration Desk)</span>
+                  </h4>
+                  <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                    فصل رسمي في طلبات الاسترداد الجزئي أو الكلي بناءً على سجل الحضور الرقمي، مطابقة الساعات، وشكاوى المنهج (وفق المادة 6 من العقد الإلكتروني).
+                  </p>
+                </div>
+                <span className="text-xs bg-rose-900/60 text-rose-200 px-3 py-1 rounded-xl border border-rose-700 font-bold shrink-0">
+                  قرارات المنصة تأديبية إدارية ملزمة
+                </span>
+              </div>
+
+              {/* Disputes List */}
+              <div className="space-y-3">
+                {disputes.map((dsp) => (
+                  <div
+                    key={dsp.id}
+                    className="p-5 rounded-2xl bg-slate-950/70 border border-slate-800 hover:border-slate-700 transition-all space-y-3"
+                  >
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-800/80 pb-3">
+                      <div className="flex items-center gap-2">
+                        <span className="px-2 py-0.5 rounded-lg bg-rose-950 text-rose-300 font-mono text-xs font-bold border border-rose-800">
+                          #{dsp.id}
+                        </span>
+                        <h5 className="font-bold text-white text-sm">{dsp.courseTitle}</h5>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-slate-400">تاريخ الطلب: {dsp.claimedAt}</span>
+                        <span className={`text-[11px] px-2.5 py-0.5 rounded-full font-bold border ${
+                          dsp.status === 'under_review'
+                            ? 'bg-amber-950 text-amber-300 border-amber-800'
+                            : dsp.status === 'approved_full_refund'
+                            ? 'bg-emerald-950 text-emerald-300 border-emerald-800'
+                            : dsp.status === 'approved_partial_refund'
+                            ? 'bg-cyan-950 text-cyan-300 border-cyan-800'
+                            : 'bg-slate-800 text-slate-400 border-slate-700'
+                        }`}>
+                          {dsp.status === 'under_review' && '⏳ قيد التحكيم والمراجعة'}
+                          {dsp.status === 'approved_full_refund' && '✓ تم الاسترجاع الكامل (100%)'}
+                          {dsp.status === 'approved_partial_refund' && '⚖️ استرجاع جزئي (50%)'}
+                          {dsp.status === 'rejected_funds_released' && '✕ طلب مرفوض / تحرير للمدرب'}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
+                      <div className="p-3 rounded-xl bg-slate-900 border border-slate-800">
+                        <span className="text-[10px] text-slate-400 block">المتدرب المشتكي:</span>
+                        <span className="font-bold text-white">{dsp.learnerName}</span>
+                        <span className="block text-[10px] text-slate-500 font-mono">{dsp.learnerEmail}</span>
+                      </div>
+
+                      <div className="p-3 rounded-xl bg-slate-900 border border-slate-800">
+                        <span className="text-[10px] text-slate-400 block">المكوّن المدعى عليه:</span>
+                        <span className="font-bold text-cyan-300">{dsp.instructorName}</span>
+                        <span className="block text-[10px] text-slate-400">حساب Escrow الوسيط</span>
+                      </div>
+
+                      <div className="p-3 rounded-xl bg-slate-900 border border-slate-800">
+                        <span className="text-[10px] text-slate-400 block">مبلغ النزاع:</span>
+                        <span className="font-black text-amber-300 font-mono text-sm">{dsp.amount} درهم</span>
+                        <span className="block text-[10px] text-slate-400">حضور رقمي: {dsp.learnerAttendanceRate}%</span>
+                      </div>
+
+                      <div className="p-3 rounded-xl bg-slate-900 border border-slate-800">
+                        <span className="text-[10px] text-slate-400 block">سبب النزاع:</span>
+                        <span className="font-bold text-rose-300">
+                          {dsp.reasonCategory === 'pre_course_cancellation' && 'إلغاء قبل 48 ساعة (المادة 2)'}
+                          {dsp.reasonCategory === 'hours_reduction' && 'تقليص عدد الساعات المقررة'}
+                          {dsp.reasonCategory === 'syllabus_breach' && 'إخلال بالمنهج المعلن'}
+                          {dsp.reasonCategory === 'trainer_absence' && 'غياب المكوّن'}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80 text-xs text-slate-300">
+                      <strong className="text-slate-400 block text-[11px] mb-1">تفاصيل الشكوى والتقرير:</strong>
+                      {dsp.description}
+                    </div>
+
+                    {dsp.arbitrationVerdict && (
+                      <div className="p-3 rounded-xl bg-cyan-950/30 border border-cyan-800/50 text-xs text-cyan-200">
+                        <strong className="text-cyan-400 block text-[11px] mb-1">قرار فريق التحكيم المعتمد:</strong>
+                        {dsp.arbitrationVerdict}
+                      </div>
+                    )}
+
+                    {/* Arbitration Actions */}
+                    {dsp.status === 'under_review' && (
+                      <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-800 flex-wrap">
+                        <button
+                          onClick={() => handleResolveDispute(dsp.id, 'approved_full')}
+                          className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs cursor-pointer shadow-sm transition-all"
+                        >
+                          قرار 1: استرجاع كامل 100% للمتدرب
+                        </button>
+                        <button
+                          onClick={() => handleResolveDispute(dsp.id, 'approved_partial')}
+                          className="px-3.5 py-1.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs cursor-pointer shadow-sm transition-all"
+                        >
+                          قرار 2: استرجاع نسبي 50%
+                        </button>
+                        <button
+                          onClick={() => handleResolveDispute(dsp.id, 'rejected')}
+                          className="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-bold text-xs cursor-pointer border border-slate-700 transition-all"
+                        >
+                          قرار 3: رفض الطلب وتحرير الرصيد للمكوّن
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
           )}

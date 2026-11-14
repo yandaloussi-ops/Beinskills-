@@ -35,7 +35,7 @@ import {
   Laptop,
   AlertTriangle
 } from 'lucide-react';
-import { Course, Transaction, TrustCertificate, UserAccount } from '../types';
+import { Course, Transaction, TrustCertificate, UserAccount, EscrowTranche } from '../types';
 import { Language, translations } from '../translations';
 import { TrustPassportCard } from './TrustPassportCard';
 import { ALL_SPECIALIZATIONS } from '../data/specializationsData';
@@ -1163,6 +1163,167 @@ export const InstructorView: React.FC<InstructorViewProps> = ({
                 {releasedPayout.toLocaleString()} <span className="text-xs">درهم</span>
               </div>
               <div className="text-[10px] text-cyan-400 mt-1">تحويلات بنكية مكتملة</div>
+            </div>
+          </div>
+
+          {/* ================= AXIS 3: ESCROW 3-TRANCHE MILESTONES ARCHITECTURE ================= */}
+          <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border border-emerald-500/30 space-y-5">
+            <div className="flex items-start justify-between flex-wrap gap-4 border-b border-slate-800 pb-4">
+              <div>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold mb-2">
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span>آلية الصرف التدريجي للضمان المالي (Escrow Milestone System)</span>
+                </div>
+                <h4 className="text-base font-bold text-white flex items-center gap-2">
+                  <span>خارطة تحرير المستحقات المرحلية (25% • 35% • 40%)</span>
+                </h4>
+                <p className="text-xs text-slate-400 mt-1 max-w-2xl leading-relaxed">
+                  يتم تأمين أموال التكوينات في حساب الضمان البنكي (Escrow) وتحريرها لحسابك تباعاً وفق إنجاز مراحل التكوين الموثقة بنظام الحضور الذكي وتقييم الجودة الثلاثي، مع اقتطاع عمولة المنصة الثابتة (20%) وصرف الصافي (80%) فور استيفاء شروط المرحلة.
+                </p>
+              </div>
+
+              {/* RIB Details Badge */}
+              <div className="p-3 rounded-xl bg-slate-900/90 border border-slate-700 text-right text-xs space-y-1">
+                <div className="text-[10px] text-slate-400">الحساب البنكي المعتمد للصرف (RIB):</div>
+                <div className="font-mono text-cyan-300 font-bold text-xs tracking-wider">
+                  230 780 00456123987456 12 01
+                </div>
+                <div className="text-[10px] text-emerald-400 flex items-center justify-end gap-1">
+                  <CheckCircle2 className="w-3 h-3" />
+                  <span>موثق ومطابق للاسم القانوني</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Courses Milestone Breakdown */}
+            <div className="space-y-4">
+              {courses.map((course) => {
+                const courseStudents = course.currentStudents || 0;
+                const courseGross = course.price * courseStudents;
+                const courseNet = Math.round(courseGross * 0.8);
+                const t1Amount = Math.round(courseNet * 0.25);
+                const t2Amount = Math.round(courseNet * 0.35);
+                const t3Amount = Math.round(courseNet * 0.40);
+
+                // Simulation based on course progress / students
+                const isT1Released = courseStudents > 0;
+                const isT2Released = (course.rating || 0) >= 4.5 && courseStudents >= 5;
+                const isT3Released = false; // Buffer 48h active
+
+                return (
+                  <div key={course.id} className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 space-y-4">
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                        <span className="font-bold text-white text-sm">{course.title}</span>
+                        <span className="text-[11px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-400">
+                          {courseStudents} متدرب مسجل
+                        </span>
+                      </div>
+                      <div className="text-xs">
+                        <span className="text-slate-400">إجمالي صافي الدورة (80%): </span>
+                        <span className="text-emerald-400 font-bold font-mono text-sm">{courseNet.toLocaleString()} درهم</span>
+                      </div>
+                    </div>
+
+                    {/* 3 Milestone Tranches Cards */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      {/* Tranche 1 */}
+                      <div className={`p-3.5 rounded-xl border text-xs space-y-2 transition-all ${
+                        isT1Released
+                          ? 'bg-emerald-950/20 border-emerald-500/40 text-slate-200'
+                          : 'bg-slate-900/40 border-slate-800 text-slate-400'
+                      }`}>
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-emerald-400">الدفعة 1 (25%)</span>
+                          <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                            isT1Released ? 'bg-emerald-500/20 text-emerald-300' : 'bg-slate-800 text-slate-400'
+                          }`}>
+                            {isT1Released ? 'محرر ومتاح للصرف ✓' : 'قيد الانتظار ⏳'}
+                          </span>
+                        </div>
+                        <div className="font-mono text-base font-black text-white">
+                          {t1Amount.toLocaleString()} <span className="text-xs font-normal text-slate-400">درهم</span>
+                        </div>
+                        <p className="text-[10px] text-slate-400 leading-tight">
+                          <span className="text-slate-300 font-medium">الشرط:</span> انطلاق الدورة وتثبيت الحضور لأول حصة تدريبية بنجاح.
+                        </p>
+                        {isT1Released && (
+                          <button
+                            onClick={() => handleRequestPayoutClick(`الدفعة 1 (25%) - ${course.title}`, t1Amount)}
+                            className="w-full mt-1 py-1.5 px-3 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 font-bold text-[11px] transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                          >
+                            <DollarSign className="w-3.5 h-3.5" />
+                            <span>طلب تحويل الدفعة 1</span>
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Tranche 2 */}
+                      <div className={`p-3.5 rounded-xl border text-xs space-y-2 transition-all ${
+                        isT2Released
+                          ? 'bg-emerald-950/20 border-emerald-500/40 text-slate-200'
+                          : 'bg-slate-900/40 border-slate-800 text-slate-400'
+                      }`}>
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-cyan-400">الدفعة 2 (35%)</span>
+                          <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                            isT2Released ? 'bg-emerald-500/20 text-emerald-300' : 'bg-slate-800 text-amber-300'
+                          }`}>
+                            {isT2Released ? 'محرر ومتاح للصرف ✓' : 'قيد الإنجاز ⏳'}
+                          </span>
+                        </div>
+                        <div className="font-mono text-base font-black text-white">
+                          {t2Amount.toLocaleString()} <span className="text-xs font-normal text-slate-400">درهم</span>
+                        </div>
+                        <p className="text-[10px] text-slate-400 leading-tight">
+                          <span className="text-slate-300 font-medium">الشرط:</span> إنجاز 50% من الساعات التدريبية وتأكيد سير المنهج.
+                        </p>
+                        {isT2Released ? (
+                          <button
+                            onClick={() => handleRequestPayoutClick(`الدفعة 2 (35%) - ${course.title}`, t2Amount)}
+                            className="w-full mt-1 py-1.5 px-3 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/30 font-bold text-[11px] transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                          >
+                            <DollarSign className="w-3.5 h-3.5" />
+                            <span>طلب تحويل الدفعة 2</span>
+                          </button>
+                        ) : (
+                          <div className="text-[10px] text-slate-500 flex items-center gap-1 pt-1">
+                            <Clock className="w-3 h-3 text-amber-400/70" />
+                            <span>يتطلب إثبات حضور 50% من الساعات</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Tranche 3 */}
+                      <div className={`p-3.5 rounded-xl border text-xs space-y-2 transition-all ${
+                        isT3Released
+                          ? 'bg-emerald-950/20 border-emerald-500/40 text-slate-200'
+                          : 'bg-slate-900/40 border-slate-800 text-slate-400'
+                      }`}>
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-amber-400">الدفعة 3 (40%)</span>
+                          <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                            isT3Released ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                          }`}>
+                            {isT3Released ? 'محرر ومتاح للصرف ✓' : 'مؤمّن في الضمان (Escrow) 🔒'}
+                          </span>
+                        </div>
+                        <div className="font-mono text-base font-black text-white">
+                          {t3Amount.toLocaleString()} <span className="text-xs font-normal text-slate-400">درهم</span>
+                        </div>
+                        <p className="text-[10px] text-slate-400 leading-tight">
+                          <span className="text-slate-300 font-medium">الشرط:</span> ختام التكوين + تسليم الشارات بجواز المهارات + فترة أمان 48h.
+                        </p>
+                        <div className="text-[10px] text-amber-400/80 flex items-center gap-1 pt-1">
+                          <ShieldCheck className="w-3 h-3 shrink-0" />
+                          <span>فترة أمان 48 ساعة لفحص عدم وجود طعون أو نزاعات</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
 

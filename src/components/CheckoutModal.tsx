@@ -12,7 +12,10 @@ import {
   Lock,
   Percent,
   Calendar,
-  Users
+  Users,
+  Store,
+  Receipt,
+  QrCode
 } from 'lucide-react';
 import { Course, PaymentType, UserProfile, Transaction } from '../types';
 
@@ -39,6 +42,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const [companyName, setCompanyName] = useState('شركة النظم المبتكرة B2B');
   const [isProcessing, setIsProcessing] = useState(false);
   const [isDone, setIsDone] = useState(false);
+  const [agencyVoucherCode] = useState(() => 'CP-' + Math.floor(100000 + Math.random() * 900000));
 
   if (!isOpen || !course) return null;
 
@@ -65,6 +69,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     const deductible = Math.min(walletBalance, basePrice);
     discountAmount = deductible;
     finalAmount = Math.max(0, basePrice - deductible);
+  } else if (paymentType === 'agency-cash') {
+    // Agency cash: full amount via voucher code
+    finalAmount = basePrice;
   }
 
   // If user checked additional cashback deduction in full or installment mode
@@ -169,6 +176,17 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               <p className="text-xs sm:text-sm text-slate-300 max-w-md mx-auto leading-relaxed">
                 تم إيداع المبلغ بأمان في الحساب الوسيط (Escrow Protected)، وتأكيد حجزك في <strong>{course.title}</strong>. كما تم إضافة كاشباك لمكافأة محفظتك!
               </p>
+              {paymentType === 'agency-cash' && (
+                <div className="p-4 max-w-sm mx-auto rounded-2xl bg-amber-950/40 border border-amber-600/50 space-y-2 text-center text-xs">
+                  <div className="text-[11px] text-amber-300 font-bold">وصل السداد النقدي بالوكالات:</div>
+                  <div className="text-xl font-black text-white font-mono bg-slate-900 py-1.5 rounded-xl border border-amber-500">
+                    {agencyVoucherCode}
+                  </div>
+                  <div className="text-[11px] text-slate-300">
+                    سدد الرسوم نقداً لدى أي وكالة <strong>CashPlus / Wafacash</strong> خلال 48 ساعة لتفعيل المقعد نهائياً.
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <form onSubmit={handleProcessPayment} className="space-y-5">
@@ -294,6 +312,77 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     </p>
                   </div>
 
+                  {/* Option E: الدفع نقداً بالوكالات المعتمدة (CashPlus / Wafacash) */}
+                  <div
+                    onClick={() => setPaymentType('agency-cash')}
+                    className={`p-3.5 rounded-2xl border cursor-pointer transition-all sm:col-span-2 ${
+                      paymentType === 'agency-cash'
+                        ? 'bg-gradient-to-r from-amber-600/20 via-orange-600/20 to-teal-600/20 border-amber-400 text-white shadow-md'
+                        : 'bg-slate-950/60 border-slate-800 text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                        <Store className="w-4 h-4 text-amber-400" />
+                        <span>الأداء نقداً بالوكالات (CashPlus / Wafacash / Barid Cash)</span>
+                      </span>
+                      <span className="text-[10px] bg-amber-950 text-amber-300 px-2 py-0.5 rounded font-bold border border-amber-700">
+                        سداد فوري محلي
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-400 mt-1">
+                      توليد وصل أداء فوري به رمز مرجعي وباركود للسداد نقداً في أكثر من 4,000 وكالة بالمغرب، مع حجز فوري للمقعد في الضمان.
+                    </p>
+                  </div>
+
+                </div>
+              </div>
+
+              {/* Sub-inputs if Agency Cash is chosen */}
+              {paymentType === 'agency-cash' && (
+                <div className="p-4 rounded-2xl bg-amber-950/20 border border-amber-600/40 space-y-2.5 animate-in fade-in">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+                      <Receipt className="w-4 h-4" />
+                      <span>رمز السداد المرجعي المخصص لك بالوكالة:</span>
+                    </span>
+                    <span className="font-mono font-black text-sm text-white bg-slate-900 px-3 py-1 rounded-xl border border-amber-500/50">
+                      {agencyVoucherCode}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-300 leading-relaxed">
+                    أظهر هذا الرمز في أي وكالة <strong>CashPlus أو Wafacash</strong> مع اسمك لسداد الرسوم. تودع الأموال مباشرة في حساب Escrow الوسيط ويصلك تأكيد الحجز برسالة SMS وبريد إلكتروني فوري.
+                  </p>
+                </div>
+              )}
+
+              {/* Escrow 3-Tranche Safeguard Banner */}
+              <div className="p-3.5 rounded-2xl bg-gradient-to-r from-slate-950 via-slate-900 to-cyan-950/40 border border-cyan-800/40 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-cyan-300">
+                    <ShieldCheck className="w-4 h-4 text-[#06B6D4]" />
+                    <span>حماية أموالك بنظام إفراج دفعات Escrow على 3 مراحل</span>
+                  </div>
+                  <span className="text-[10px] text-emerald-400 font-bold bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-800">
+                    ضمان 100%
+                  </span>
+                </div>
+                <div className="grid grid-cols-3 gap-2 text-center text-[10px] pt-1">
+                  <div className="p-2 rounded-xl bg-slate-900 border border-slate-800">
+                    <span className="font-bold text-white block">مرحلة 1 (25%)</span>
+                    <span className="text-slate-400">عند أول حصة مؤكدة</span>
+                  </div>
+                  <div className="p-2 rounded-xl bg-slate-900 border border-slate-800">
+                    <span className="font-bold text-white block">مرحلة 2 (35%)</span>
+                    <span className="text-slate-400">عند انتصاف الساعات</span>
+                  </div>
+                  <div className="p-2 rounded-xl bg-slate-900 border border-slate-800">
+                    <span className="font-bold text-white block">مرحلة 3 (40%)</span>
+                    <span className="text-slate-400">عند التخرج ونيل الشارة</span>
+                  </div>
+                </div>
+                <div className="text-[10px] text-slate-400 leading-relaxed pt-0.5">
+                  • تبقى الدفعة الختامية محتجزة لمدة 48 ساعة بعد الدورة لضمان حقك في التقييم وطلب الاسترجاع العادل إذا أخلّ المدرب بالمنهج.
                 </div>
               </div>
 
